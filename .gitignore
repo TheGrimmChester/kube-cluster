@@ -18,3 +18,5 @@ kubeconfig
 .idea
 # wiki
 wiki
+
+.sops.yaml
