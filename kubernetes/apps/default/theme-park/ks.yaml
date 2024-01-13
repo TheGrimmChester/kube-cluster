@@ -7,7 +7,7 @@ metadata:
   namespace: flux-system
 spec:
   dependsOn:
-    - name: cluster-apps-nginx-external
+    - name: nginx-external
   path: ./kubernetes/apps/default/theme-park/app
   prune: true
   sourceRef:

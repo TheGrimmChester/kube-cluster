@@ -10,7 +10,7 @@ spec:
   dependsOn:
     - name: cluster-apps-rook-ceph-cluster
     - name: cluster-apps-volsync
-    - name: cluster-apps-nginx-external
+    - name: nginx-external
     - name: cluster-apps-registry
   path: './kubernetes/apps/default/registry-ui/app/'
   prune: true

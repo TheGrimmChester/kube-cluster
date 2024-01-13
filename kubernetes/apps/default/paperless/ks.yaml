@@ -8,7 +8,7 @@ metadata:
 spec:
   dependsOn:
     - name: cluster-apps-cloudnative-pg
-    - name: cluster-apps-nginx-external
+    - name: nginx-external
   path: ./kubernetes/apps/default/paperless/app
   prune: true
   sourceRef:

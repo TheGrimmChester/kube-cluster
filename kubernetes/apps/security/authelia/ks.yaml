@@ -10,7 +10,7 @@ spec:
     - name: cluster-apps-glauth
     - name: cluster-apps-cloudnative-pg
     - name: cluster-apps-redis
-    - name: cluster-apps-nginx-external
+    - name: nginx-external
   path: ./kubernetes/apps/security/authelia/app
   prune: true
   sourceRef:

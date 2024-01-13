@@ -10,7 +10,7 @@ metadata:
 spec:
   dependsOn:
     - name: cluster-apps-rook-ceph-cluster
-    - name: cluster-apps-nginx-internal
+    - name: nginx-internal
 #    - name: cluster-apps-thanos-app
   path: ./kubernetes/apps/observability/kube-prometheus-stack/app
   prune: true
