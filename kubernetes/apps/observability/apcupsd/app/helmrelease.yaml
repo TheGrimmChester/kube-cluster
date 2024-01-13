@@ -1,0 +1,94 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.trux.dev/helmrelease_v2beta1.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: &app apcupsd
+  namespace: observability
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: app-template
+      version: 1.5.1
+      interval: 15m
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  maxHistory: 3
+  install:
+    createNamespace: true
+    remediation:
+      retries: 30
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 30
+  uninstall:
+    keepHistory: false
+
+  values:
+    controller:
+      replicas: 1
+      strategy: RollingUpdate
+    image:
+      repository: bnhf/apcupsd
+      tag: latest@sha256:c183696ee99125f45f3a1f6ee1a96370ba1dbc00af3588bd12423b9af4cb0a47
+    env:
+      TZ: Europe/Paris
+      UPSNAME: APC2018
+      UPSCABLE: usb
+      UPSTYPE: usb
+      NETSERVER: on
+      NISIP: 0.0.0.0
+      DEVICE: /dev/usb/hiddev0
+    securityContext:
+      # -- (bool) Privileged securityContext may be required if USB controller is accessed directly through the host machine
+      privileged: true
+
+    podSecurityContext:
+      # -- (bool) Privileged securityContext may be required if USB controller is accessed directly through the host machine
+      privileged: true
+      runAsUser: 0
+      runAsGroup: 0
+      fsGroup: 0
+      fsGroupChangePolicy: OnRootMismatch
+    resources:
+      requests:
+        cpu: 15m
+        memory: 64M
+      limits:
+        memory: 124M
+
+    service:
+      main:
+        ports:
+          http:
+            port: 3551
+
+    ingress:
+      main:
+        enabled: false
+
+    nodeSelector:
+      kubernetes.io/hostname: "truenas2012"
+
+    volumeClaimTemplates:
+      - name: data
+        mountPath: /etc/apcupsd
+        accessMode: ReadWriteOnce
+        size: 1Gi
+        storageClass: ceph-block
+
+    persistence:
+      apcupsd-dbus:
+        enabled: true
+        type: hostPath
+        hostPath: /var/run/dbus/system_bus_socket
+        mountPath: /var/run/dbus/system_bus_socket
+      apc:
+        enabled: true
+        type: hostPath
+        hostPath: "/dev/usb/hiddev0"
+        mountPath: "/dev/usb/hiddev0"

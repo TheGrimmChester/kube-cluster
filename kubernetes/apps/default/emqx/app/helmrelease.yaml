@@ -1,0 +1,110 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.trux.dev/helmrelease_v2beta1.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: &app emqx
+  namespace: default
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: emqx
+      version: 5.3.2
+      sourceRef:
+        kind: HelmRepository
+        name: emqx-charts
+        namespace: flux-system
+  maxHistory: 3
+  install:
+    createNamespace: true
+    remediation:
+      retries: 30
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 30
+  uninstall:
+    keepHistory: false
+  values:
+    controller:
+      type: statefulset
+      annotations:
+        reloader.stakater.com/auto: "true"
+
+    image:
+      repository: public.ecr.aws/emqx/emqx
+    replicaCount: 1
+    recreatePods: true
+    envFrom:
+      - secretRef:
+          name: emqx-secret
+    emqxConfig:
+      EMQX_ALLOW_ANONYMOUS: 'false'
+      EMQX_AUTH__MNESIA__PASSWORD_HASH: plain
+      EMQX_AUTH__ADMIN__PASSWORD: "${MQTT_PASSWORD}"
+      EMQX_DASHBOARD__DEFAULT_USERNAME: "${MQTT_USER}"
+      EMQX_DASHBOARD__DEFAULT_PASSWORD: "${MQTT_PASSWORD}"
+      EMQX_AUTH__USER__1__PASSWORD: "${MQTT_PASSWORD}"
+      EMQX_AUTH__USER__1__USERNAME: "${MQTT_USER}"
+#      EMQX_LOADED_MODULES: "emqx_mod_presence,emqx_mod_acl_internal,emqx_mod_topic_metrics"
+#      EMQX_LOADED_PLUGINS: "emqx_management,emqx_recon,emqx_retainer,emqx_dashboard,emqx_rule_engine,emqx_auth_mnesia,emqx_prometheus"
+
+    service:
+      type: LoadBalancer
+      loadBalancerIP: '192.168.1.205'
+      annotations:
+        "io.cilium/lb-ipam-ips": "192.168.1.205"
+
+    #      externalTrafficPolicy: Local
+    ingress:
+      dashboard:
+        enabled: true
+        ingressClassName: external
+        annotations:
+          hajimari.io/appName: 'EMQX'
+          hajimari.io/icon: simple-icons:eclipsemosquitto
+          external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
+#          nginx.ingress.kubernetes.io/whitelist-source-range: |
+#            10.0.0.0/8,172.16.0.0/12,192.168.0.0/16
+        path: /
+        pathType: Prefix
+        hosts:
+          - &host "emqx.${SECRET_DOMAIN}"
+        tls:
+          - hosts:
+              - *host
+    metrics:
+      enabled: false
+    persistence:
+      enabled: true
+      storageClass: ceph-block
+      size: 1Gi
+#    affinity:
+#      podAntiAffinity:
+#        preferredDuringSchedulingIgnoredDuringExecution:
+#          - weight: 100
+#            podAffinityTerm:
+#              labelSelector:
+#                matchExpressions:
+#                  - key: app.kubernetes.io/name
+#                    operator: In
+#                    values:
+#                      - emqx
+#              topologyKey: kubernetes.io/hostname
+    resources:
+      requests:
+        cpu: 10m
+        memory: 150Mi
+      limits:
+        memory: 512Mi
+
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: kubernetes.io/hostname
+                  operator: In
+                  values:
+                    - truenas2012
