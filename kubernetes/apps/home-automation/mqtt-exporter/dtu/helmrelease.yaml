@@ -1,0 +1,68 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.devbu.io/helmrelease_v2beta1.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: mqtt-exporter-dtu
+  namespace: home-automation
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: app-template
+      version: 1.5.1
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+
+  maxHistory: 3
+  install:
+    createNamespace: true
+    remediation:
+      retries: 30
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 30
+  uninstall:
+    keepHistory: false
+  values:
+    image:
+      repository: ghcr.io/kpetremann/mqtt-exporter
+      tag: 1.4.1
+
+    envFrom:
+      - secretRef:
+          name: zigbee2mqtt-secret
+    env:
+      TZ: Europe/Paris
+      MQTT_ADDRESS: "mosquitto.default.svc.cluster.local"
+      MQTT_V5_PROTOCOL: "True"
+      MQTT_CLIENT_ID: "mqtt_exporter_dtu"
+      PROMETHEUS_PORT: "8080"
+      MQTT_EXPOSE_CLIENT_ID: "False"
+      LOG_LEVEL: DEBUG
+      LOG_MQTT_MESSAGE: "True"
+      MQTT_IGNORED_TOPICS: "homeassistant/#"
+      KEEP_FULL_TOPIC: "True"
+      MQTT_TOPIC: "solar/#"
+      PROMETHEUS_PREFIX: "mqtt_dtu_"
+
+    service:
+      main:
+        ports:
+          http:
+            port: 8080
+
+    ingress:
+      main:
+        enabled: false
+
+    probes:
+      liveness:
+        enabled: false
+      readiness:
+        enabled: false
+      startup:
+        enabled: false

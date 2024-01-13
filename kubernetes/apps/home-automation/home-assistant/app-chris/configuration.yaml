@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ha-config-chris
+  namespace: home-automation
+data:
+  configuration.yaml: |
+    homeassistant:
+      # Name of the location where Home Assistant is running
+      name: Home
+      # Location required to calculate the time the sun rises and sets
+      latitude: 0
+      longitude: 0
+      # Impacts weather/sunrise data (altitude above sea level in meters)
+      elevation: 0
+      # metric for Metric, imperial for Imperial
+      unit_system: metric
+      # Pick yours from here: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+      time_zone: America/Phoenix
+
+      auth_providers:
+        - type: homeassistant
+
+    default_config:
+
+    http:
+      ip_ban_enabled: false
+      login_attempts_threshold: 5
+      use_x_forwarded_for: true
+      trusted_proxies:
+        - '10.0.0.0/8'
+        - '172.16.0.0/12'
+        - '192.168.0.0/18'

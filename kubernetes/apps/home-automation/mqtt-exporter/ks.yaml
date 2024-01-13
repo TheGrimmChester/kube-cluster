@@ -1,0 +1,37 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+kind: Kustomization
+metadata:
+  name: cluster-apps-mqtt-exporter-dtu
+  namespace: flux-system
+  labels:
+    substitution.flux.home.arpa/enabled: "true"
+spec:
+  interval: 10m
+  path: "./kubernetes/apps/home-automation/mqtt-exporter/dtu"
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
+  wait: false # no flux ks dependents
+  dependsOn:
+    - name: cluster-apps-mosquitto
+
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+kind: Kustomization
+metadata:
+  name: cluster-apps-mqtt-exporter-solar-router
+  namespace: flux-system
+  labels:
+    substitution.flux.home.arpa/enabled: "true"
+spec:
+  interval: 10m
+  path: "./kubernetes/apps/home-automation/mqtt-exporter/solar-router"
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
+  wait: false # no flux ks dependents
+  dependsOn:
+    - name: cluster-apps-mosquitto
