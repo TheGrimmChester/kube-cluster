@@ -1,115 +1,90 @@
 ---
-apiVersion: helm.toolkit.fluxcd.io/v2beta2
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
-  name: &app jdownloader
+  name: &app jdownloader2
   namespace: media
 spec:
-  interval: 15m
+  interval: 30m
   chart:
     spec:
-      chart: jdownloader2
-      version: 11.0.17
-      interval: 15m
+      chart: app-template
+      version: 2.4.0
       sourceRef:
         kind: HelmRepository
-        name: truecharts
+        name: bjw-s
         namespace: flux-system
-  maxHistory: 3
   install:
-    createNamespace: true
     remediation:
-      retries: 30
+      retries: 3
   upgrade:
     cleanupOnFail: true
     remediation:
-      retries: 30
+      retries: 3
   uninstall:
     keepHistory: false
-
+  dependsOn:
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
   values:
-#    controller:
-#      replicas: 1
-#      type: statefulset
-#      annotations:
-#        reloader.stakater.com/auto: "true"
+    controllers:
+      main:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          main:
+            image:
+              repository: docker.io/jlesage/jdownloader-2
+              tag: v23.12.2
+            env:
+              TZ: Europe/Paris
+              MYJDOWNLOADER_DEVICE_NAME: "Kube"
+#              # General Settings
+#              KEEP_APP_RUNNING: false
+#              # GUI Settings
+#              DISPLAY_WIDTH: 1280
+#              DISPLAY_HEIGHT: 768
+#              SECURE_CONNECTION: false
+#              ENABLE_CJK_FONT: false
+#              CONTAINER_DEBUG: true
+#              LANG: es_MX.UTF-8
+            envFrom:
+              - secretRef:
+                  name: jdownloader-jdownloader2-secret
 
-#    image:
-#      repository: jlesage/jdownloader-2
-#      tag: latest
-#      imagePullPolicy: IfNotPresent
-    image:
-      repository: tccr.io/truecharts/jdownloader-2
-      pullPolicy: IfNotPresent
-      tag: v23.11.1@sha256:a94956feb58ece619d1b2bdecd3457a15b1e862c649204c1d85f51b1417a8344
+            nodeSelector:
+              kubernetes/.io/hostname: "truenas2012"
 
-    env:
-#      TZ: Europe/Paris
-      MYJDOWNLOADER_DEVICE_NAME: "Kube"
-      # General Settings
-      KEEP_APP_RUNNING: false
-      # GUI Settings
-      DISPLAY_WIDTH: 1280
-      DISPLAY_HEIGHT: 768
-      SECURE_CONNECTION: false
-      ENABLE_CJK_FONT: false
-      CONTAINER_DEBUG: true
-    envFrom:
-      - secretRef:
-          name: jdownloader-jdownloader2-secret
+            securityContext:
+              readOnlyRootFilesystem: false
+              runAsNonRoot: false
 
-#    resources:
-#      requests:
-#        cpu: 15m
-#        memory: 64M
-#      limits:
-#        memory: 500M
+            podSecurityContext:
+              runAsUser: 0
+              runAsGroup: 0
+              fsGroup: 568
+              fsGroupChangePolicy: OnRootMismatch
 
+            resources:
+              requests:
+                cpu: 100m
+                memory: 100Mi
+              limits:
+                memory: 500Mi
     service:
       main:
         ports:
-          main:
-            port: 10054
-            targetPort: 5800
-    myjd:
-      enabled: true
-      ports:
-        myjd:
-          enabled: true
-          port: 3129
-          targetPort: 3129
-    vnc:
-      enabled: true
-      ports:
-        vnc:
-          enabled: true
-          port: 10056
-          targetPort: 5900
-
-#    probes:
-#      liveness: &probes
-#        enabled: true
-#        custom: true
-#        spec:
-#          httpGet:
-#            path: /
-#            port: 5800
-#          initialDelaySeconds: 0
-#          periodSeconds: 10
-#          timeoutSeconds: 1
-#          failureThreshold: 3
-#      readiness: *probes
-#      startup:
-#        enabled: false
+          http:
+            port: 5800
     ingress:
       main:
         enabled: true
-        ingressClassName: external
+        className: external
         annotations:
           external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
 
-#          nginx.ingress.kubernetes.io/whitelist-source-range: |
-#            10.0.0.0/8,172.16.0.0/12,192.168.0.0/16
+          #          nginx.ingress.kubernetes.io/whitelist-source-range: |
+          #            10.0.0.0/8,172.16.0.0/12,192.168.0.0/16
           nginx.ingress.kubernetes.io/auth-method: GET
           nginx.ingress.kubernetes.io/auth-url: http://authelia.security.svc.cluster.local/api/verify
           nginx.ingress.kubernetes.io/auth-signin: "https://auth.${SECRET_DOMAIN}?rm=$request_method"
@@ -121,24 +96,15 @@ spec:
           hajimari.io/enable: "true"
           hajimari.io/appName: "JD2"
         hosts:
-          - host: &host "jd2.${SECRET_DOMAIN}"
+          - host: &host jd2.${SECRET_DOMAIN}
             paths:
               - path: /
-                pathType: Prefix
+                service:
+                  name: main
+                  port: http
         tls:
           - hosts:
               - *host
-
-    securityContext:
-      readOnlyRootFilesystem: false
-      runAsNonRoot: false
-
-    podSecurityContext:
-      runAsUser: 0
-      runAsGroup: 0
-      fsGroup: 568
-      fsGroupChangePolicy: OnRootMismatch
-
     persistence:
       config:
         enabled: true
@@ -146,11 +112,6 @@ spec:
         size: 1Gi
         storageClass: ceph-block
         accessMode: ReadWriteOnce
-#      output:
-#        enabled: true
-#        type: hostPath
-#        hostPath: "/mnt/Entertainments/Downloads"
-#        mountPath: "/output"
       output:
         enabled: true
         type: nfs
@@ -158,33 +119,3 @@ spec:
         path: /mnt/Entertainments/Downloads
         mountPath: /output
         readOnly: false
-#
-#      output:
-#        enabled: true
-#        mountPath: /output
-#        type: nfs
-#        server: "192.168.1.98"
-#        path: /mnt/ssd_4to/Downloads
-#        readOnly: false
-
-    nodeSelector:
-      kubernetes/.io/hostname: "truenas2012"
-
-    # affinity:
-    #   nodeAffinity:
-    #     requiredDuringSchedulingIgnoredDuringExecution:
-    #       nodeSelectorTerms:
-    #         - matchExpressions:
-    #             - key: kubernetes.io/hostname
-    #               operator: In
-    #               values:
-    #                 - truenas2012
-
-#    resources:
-#      requests:
-#        gpu.intel.com/i915: 1
-#        cpu: 100m
-#        memory: 1000Mi
-#      limits:
-#        gpu.intel.com/i915: 1
-#        memory: 4000Mi
