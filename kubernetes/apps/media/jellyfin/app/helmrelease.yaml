@@ -1,0 +1,140 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: jellyfin
+  namespace: media
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: app-template
+      version: 1.5.1
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  maxHistory: 3
+  install:
+    createNamespace: true
+    remediation:
+      retries: 30
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 30
+  uninstall:
+    keepHistory: false
+  values:
+    controller:
+      type: statefulset
+    image:
+      repository: ghcr.io/onedr0p/jellyfin
+      tag: 10.8.11@sha256:926e2a9f6677a0c7b12feba29f36c954154869318d6a52df72f72ff9c74cf494
+    env:
+      TZ: America/New_York
+    service:
+      main:
+        type: LoadBalancer
+        #externalIPs: ["192.168.1.206"]
+        loadBalancerIP: "192.168.1.206"
+        annotations:
+          "io.cilium/lb-ipam-ips": "192.168.1.206"
+
+        #        externalTrafficPolicy: Local
+        ports:
+          http:
+            port: &port 8096
+    # serviceMonitor:
+    #   main:
+    #     enabled: true
+    probes:
+      liveness: &probes
+        enabled: true
+        custom: true
+        spec:
+          httpGet:
+            path: /health
+            port: *port
+          initialDelaySeconds: 0
+          periodSeconds: 10
+          timeoutSeconds: 1
+          failureThreshold: 3
+      readiness: *probes
+      startup:
+        enabled: false
+    ingress:
+      main:
+        enabled: true
+        ingressClassName: external
+        annotations:
+#          nginx.ingress.kubernetes.io/whitelist-source-range: |
+#            10.0.0.0/8,172.16.0.0/12,192.168.0.0/16
+          hajimari.io/icon: simple-icons:jellyfin
+          hajimari.io/enable: "true"
+        hosts:
+          - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - *host
+            secretName: clouded-fr-production-tls
+    podSecurityContext:
+      runAsUser: 568
+      runAsGroup: 568
+      fsGroup: 568
+      fsGroupChangePolicy: OnRootMismatch
+      supplementalGroups: [44, 109, 10000]
+#    volumeClaimTemplates:
+#      - name: config
+#        mountPath: /config
+#        accessMode: ReadWriteOnce
+#        size: 50Gi
+#        storageClass: ceph-block
+    persistence:
+      config:
+        enabled: true
+        type: nfs
+        server: "192.168.1.98"
+        path: /mnt/ssd_4to/Apps/jellyfin
+        mountPath: /config
+        readOnly: false
+      # config:
+      #   enabled: true
+      #   type: hostPath
+      #   hostPath: "/mnt/Apps/kube/volumes/jellyfin"
+      #   mountPath: "/config"
+      media:
+        enabled: true
+        type: nfs
+        server: "192.168.1.101"
+        path: /mnt/Entertainments
+        mountPath: /media
+        readOnly: true
+      transcode:
+        enabled: true
+        type: emptyDir
+    nodeSelector:
+#      node-role.kubernetes.io/worker: "true"
+      intel.feature.node.kubernetes.io/gpu: "true"
+      kubernetes.io/hostname: "truenas2012"
+
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+                - key: app.kubernetes.io/name
+                  operator: In
+                  values: ["truenas2012"]
+            topologyKey: kubernetes.io/hostname
+#    resources:
+#      requests:
+#        gpu.intel.com/i915: 1
+#        cpu: 100m
+#        memory: 1000Mi
+#      limits:
+#        gpu.intel.com/i915: 1
+#        memory: 4000Mi

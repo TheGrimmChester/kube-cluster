@@ -1,0 +1,29 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.devbu.io/replicationsource_v1alpha1.json
+apiVersion: volsync.backube/v1alpha1
+kind: ReplicationSource
+metadata:
+  name: jellyfin
+  namespace: media
+spec:
+  sourcePVC: config-jellyfin-0
+  trigger:
+    schedule: "0 22 * * *"
+  restic:
+    copyMethod: Snapshot
+    pruneIntervalDays: 10
+    repository: jellyfin-restic-secret
+    cacheCapacity: 2Gi
+    volumeSnapshotClassName: csi-ceph-blockpool
+    storageClassName: ceph-block
+    moverSecurityContext:
+      runAsUser: 568
+      runAsGroup: 568
+      fsGroup: 568
+    #https://volsync.readthedocs.io/en/stable/design/restic.html
+    retain:
+      hourly: 24
+      daily: 30
+      weekly: 52
+      monthly: 12
+      yearly: 10

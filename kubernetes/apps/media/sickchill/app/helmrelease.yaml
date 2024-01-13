@@ -1,0 +1,133 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.trux.dev/helmrelease_v2beta1.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: &app sickchill
+  namespace: media
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: app-template
+      version: 1.5.1
+      interval: 15m
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  maxHistory: 3
+  install:
+    createNamespace: true
+    remediation:
+      retries: 30
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 30
+  uninstall:
+    keepHistory: false
+
+  values:
+    controller:
+      replicas: 1
+      type: statefulset
+      annotations:
+        reloader.stakater.com/auto: "true"
+
+    image:
+      repository: lscr.io/linuxserver/sickchill
+      tag: 2024.1.8@sha256:4bcc6888e414e78a3af82f211611b1e1f7d66b51a2aaffc6e94d5fff2c4d4a4e
+      imagePullPolicy: IfNotPresent
+    env:
+      TZ: "Europe/Paris"
+      PUID: 911
+      PGID: 1001
+#    resources:
+#      requests:
+#        cpu: 15m
+#        memory: 64M
+#      limits:
+#        memory: 124M
+    service:
+      main:
+        ports:
+          http:
+            port: &port 8081
+
+#    podSecurityContext:
+#      runAsUser: 911
+#      runAsGroup: 1001
+#      fsGroup: 1001
+#      fsGroupChangePolicy: OnRootMismatch
+
+    volumeClaimTemplates:
+      - name: config
+        mountPath: /config
+        accessMode: ReadWriteOnce
+        size: 1Gi
+        storageClass: ceph-block
+
+    persistence:
+      media:
+        enabled: true
+        type: nfs
+        server: "192.168.1.101"
+        path: /mnt/Entertainments
+        mountPath: /media/Entertainments
+        readOnly: false
+#      media:
+#        enabled: true
+#        type: hostPath
+#        hostPath: "/mnt/Entertainments"
+#        mountPath: "/media/Entertainments"
+
+    nodeSelector:
+      #      node-role.kubernetes.io/worker: "true"
+#      intel.feature.node.kubernetes.io/gpu: "true"
+      kubernetes.io/hostname: "truenas2012"
+
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+                - key: app.kubernetes.io/name
+                  operator: In
+                  values: [ "truenas2012" ]
+            topologyKey: kubernetes.io/hostname
+
+    ingress:
+      main:
+        enabled: true
+        ingressClassName: external
+        annotations:
+          external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
+
+#          nginx.ingress.kubernetes.io/whitelist-source-range: |
+#            10.0.0.0/8,172.16.0.0/12,192.168.0.0/16
+          nginx.ingress.kubernetes.io/auth-method: GET
+          nginx.ingress.kubernetes.io/auth-url: http://authelia.security.svc.cluster.local/api/verify
+          nginx.ingress.kubernetes.io/auth-signin: "https://auth.${SECRET_DOMAIN}?rm=$request_method"
+          nginx.ingress.kubernetes.io/auth-response-headers: Remote-User,Remote-Name,Remote-Groups,Remote-Email
+          nginx.ingress.kubernetes.io/auth-snippet: |
+            proxy_set_header X-Forwarded-Method $request_method;
+
+          hajimari.io/icon: simple-icons:sickchill
+          hajimari.io/enable: "true"
+        hosts:
+          - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - *host
+            secretName: clouded-fr-production-tls
+    probes:
+      liveness:
+        enabled: false
+      readiness:
+        enabled: false
+      startup:
+        enabled: false
