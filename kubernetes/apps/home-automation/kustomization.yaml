@@ -6,4 +6,4 @@ resources:
   - ./home-assistant/ks.yaml
   - ./zigbee2mqtt/ks.yaml
   - ./mqtt-exporter/ks.yaml
-  - ./esphome/ks.yaml
+#  - ./esphome/ks.yaml
