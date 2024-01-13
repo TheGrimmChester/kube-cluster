@@ -16,7 +16,7 @@ spec:
   wait: false # no flux ks dependents
   dependsOn:
     - name: cluster-apps-mosquitto
-    - name: cluster-apps-nginx-external
+    - name: nginx-external
     - name: cluster-apps-rook-ceph-cluster
     - name: cluster-apps-volsync
     - name: cluster-apps-authelia

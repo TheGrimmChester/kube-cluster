@@ -20,6 +20,9 @@ includes:
   k0s: .taskfiles/K0sTasks.yaml
   repo: .taskfiles/RepoTasks.yaml
   sops: .taskfiles/SopsTasks.yaml
+  volsync: .taskfiles/VolSync/Tasks.yml
+  rook: .taskfiles/Rook/Tasks.yml
+  database: .taskfiles/Database/Tasks.yml
 
 tasks:
 
