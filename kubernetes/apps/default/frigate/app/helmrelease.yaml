@@ -121,11 +121,16 @@ spec:
 #        mountPath: "/media/frigate/recordings"
 
       recs:
+#        enabled: true
+#        type: hostPath
+#        hostPath: "/mnt/ssd_4to/cameras/frigate"
+#        mountPath: "/media/frigate/recordings"
         enabled: true
-        type: hostPath
-        hostPath: "/mnt/ssd_4to/cameras/frigate"
-        mountPath: "/media/frigate/recordings"
-
+        type: nfs
+        server: "192.168.1.49"
+        path: /mnt/ssd_4to/cameras/frigate
+        mountPath: /media/frigate/recordings
+        readOnly: false
       cache:
         enabled: true
         type: emptyDir
@@ -143,14 +148,14 @@ spec:
 #    nodeSelector:
 #      google.feature.node.kubernetes.io/coral: "true"
     nodeSelector:
-#      intel.feature.node.kubernetes.io/gpu: "true"
-      kubernetes.io/hostname: "truenas2012"
-
-    resources:
-      requests:
-        gpu.intel.com/i915: 1
-#        cpu: 136m
-#        memory: 1024Mi
-      limits:
-        gpu.intel.com/i915: 1
-#        memory: 8192Mi
+      intel.feature.node.kubernetes.io/gpu: "true"
+      kubernetes.io/hostname: "node-3"
+#
+#    resources:
+#      requests:
+#        gpu.intel.com/i915: 1
+##        cpu: 136m
+##        memory: 1024Mi
+#      limits:
+#        gpu.intel.com/i915: 1
+##        memory: 8192Mi
