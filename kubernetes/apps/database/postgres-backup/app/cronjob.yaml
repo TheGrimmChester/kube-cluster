@@ -103,7 +103,11 @@ spec:
           restartPolicy: OnFailure
 
           volumes:
+#            - name: nas-backups
+#              nfs:
+#                server: "192.168.1.98"
+#                path: /mnt/ssd_4to/minio/postgresql/dumps
             - name: nas-backups
-              nfs:
-                server: "192.168.1.98"
+              hostPath:
                 path: /mnt/ssd_4to/minio/postgresql/dumps
+                type: Directory
