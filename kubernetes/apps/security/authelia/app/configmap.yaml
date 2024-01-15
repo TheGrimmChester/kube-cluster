@@ -7,6 +7,11 @@ metadata:
     app: authelia
 data:
   configuration.yml: |
+    server:
+      buffers:
+        read: 8192
+        write: 8192
+
     session:
       redis:
         high_availability:
