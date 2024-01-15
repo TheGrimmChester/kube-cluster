@@ -11,3 +11,6 @@ kubernetes:
         truenas2012:
           ansible_user: root
           ansible_host: 192.168.1.49
+        node-3:
+          ansible_user: root
+          ansible_host: 192.168.1.138
