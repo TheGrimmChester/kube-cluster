@@ -128,7 +128,7 @@ spec:
       type: statefulset
       annotations:
         reloader.stakater.com/auto: "true"
-
+#
     affinity:
       nodeAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
@@ -138,3 +138,4 @@ spec:
                   operator: In
                   values:
                     - truenas2012
+                    - worker-1

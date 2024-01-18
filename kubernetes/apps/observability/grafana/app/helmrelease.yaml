@@ -440,6 +440,7 @@ spec:
                   operator: In
                   values:
                     - truenas2012
+                    - worker-1
 
 #    topologySpreadConstraints:
 #      - maxSkew: 1

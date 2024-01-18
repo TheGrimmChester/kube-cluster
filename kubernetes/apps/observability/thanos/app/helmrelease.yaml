@@ -36,6 +36,7 @@ spec:
                   operator: In
                   values:
                     - truenas2012
+                    - worker-1
 
     image:
       registry: quay.io
@@ -92,6 +93,7 @@ spec:
                     operator: In
                     values:
                       - truenas2012
+                      - worker-1
 
       enabled: true
       extraFlags:
@@ -125,6 +127,7 @@ spec:
                     operator: In
                     values:
                       - truenas2012
+                      - worker-1
 
       enabled: true
 #      resources:

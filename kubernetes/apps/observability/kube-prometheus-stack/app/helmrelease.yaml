@@ -41,6 +41,7 @@ spec:
                     operator: In
                     values:
                       - truenas2012
+                      - worker-1
 
     grafana:
       enabled: false
@@ -146,7 +147,7 @@ spec:
       thanosServiceMonitor:
         enabled: true
       prometheusSpec:
-        replicas: 1
+        replicas: 2
         replicaExternalLabelName: __replica__
         ruleSelectorNilUsesHelmValues: false
         serviceMonitorSelectorNilUsesHelmValues: false
@@ -478,6 +479,8 @@ spec:
                   operator: In
                   values:
                     - truenas2012
+                    - worker-1
+                    - worker-1
 #      podAffinity:
 #        requiredDuringSchedulingIgnoredDuringExecution:
 #          - labelSelector:

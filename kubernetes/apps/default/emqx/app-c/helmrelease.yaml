@@ -97,7 +97,7 @@ spec:
         memory: 150Mi
       limits:
         memory: 512Mi
-
+#
     affinity:
       nodeAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
@@ -107,3 +107,4 @@ spec:
                   operator: In
                   values:
                     - truenas2012
+                    - worker-1
