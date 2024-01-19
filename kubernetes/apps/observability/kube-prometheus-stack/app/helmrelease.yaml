@@ -61,6 +61,7 @@ spec:
                     operator: In
                     values:
                       - truenas2012
+                      - worker-1
 
       metricLabelsAllowlist:
         - "pods=[*]"
@@ -162,10 +163,10 @@ spec:
             spec:
               accessModes:
                 - ReadWriteOnce
-              storageClassName: local-path
+              storageClassName: ceph-block
               resources:
                 requests:
-                  storage: 10Gi
+                  storage: 100Gi
 #        resources:
 ##          requests:
 ##            cpu: 350m
@@ -479,7 +480,6 @@ spec:
                   operator: In
                   values:
                     - truenas2012
-                    - worker-1
                     - worker-1
 #      podAffinity:
 #        requiredDuringSchedulingIgnoredDuringExecution:
