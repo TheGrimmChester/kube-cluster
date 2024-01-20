@@ -19,4 +19,4 @@ spec:
     - name: nginx-external
     - name: cluster-apps-rook-ceph-cluster
     - name: cluster-apps-volsync
-    - name: cluster-apps-authelia
+#    - name: cluster-apps-authelia
