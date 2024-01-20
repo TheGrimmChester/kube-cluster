@@ -72,7 +72,7 @@ spec:
         enabled: false
 
     nodeSelector:
-      kubernetes.io/hostname: "truenas2012"
+      kubernetes.io/hostname: "worker-1"
 
     volumeClaimTemplates:
       - name: data
