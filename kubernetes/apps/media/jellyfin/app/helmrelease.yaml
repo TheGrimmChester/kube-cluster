@@ -119,7 +119,7 @@ spec:
     nodeSelector:
 #      node-role.kubernetes.io/worker: "true"
       intel.feature.node.kubernetes.io/gpu: "true"
-      kubernetes.io/hostname: "truenas2012"
+      kubernetes.io/hostname: "node-3"
 
     affinity:
       podAntiAffinity:
@@ -128,7 +128,7 @@ spec:
               matchExpressions:
                 - key: app.kubernetes.io/name
                   operator: In
-                  values: ["truenas2012"]
+                  values: ["node-3"]
             topologyKey: kubernetes.io/hostname
 #    resources:
 #      requests:

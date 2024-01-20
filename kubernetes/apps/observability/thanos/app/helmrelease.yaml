@@ -35,7 +35,7 @@ spec:
                 - key: kubernetes.io/hostname
                   operator: In
                   values:
-                    - truenas2012
+                    - node-3
                     - worker-1
 
     image:
@@ -92,7 +92,7 @@ spec:
                   - key: kubernetes.io/hostname
                     operator: In
                     values:
-                      - truenas2012
+                      - node-3
                       - worker-1
 
       enabled: true
@@ -126,7 +126,7 @@ spec:
                   - key: kubernetes.io/hostname
                     operator: In
                     values:
-                      - truenas2012
+                      - node-3
                       - worker-1
 
       enabled: true

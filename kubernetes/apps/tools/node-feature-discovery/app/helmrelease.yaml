@@ -33,7 +33,7 @@ spec:
                   - key: kubernetes.io/hostname
                     operator: In
                     values:
-                      - truenas2012
+                      - node-3
 
     worker:
       annotations:

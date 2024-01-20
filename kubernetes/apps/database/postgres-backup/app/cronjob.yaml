@@ -113,4 +113,4 @@ spec:
                 type: Directory
 
           nodeSelector:
-            kubernetes.io/hostname: "truenas2012"
+            kubernetes.io/hostname: "node-3"

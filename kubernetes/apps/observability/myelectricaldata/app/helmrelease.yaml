@@ -94,4 +94,4 @@ spec:
         size: 1Gi
 #
 #    nodeSelector:
-#      kubernetes.io/hostname: "truenas2012"
+#      kubernetes.io/hostname: "node-3"

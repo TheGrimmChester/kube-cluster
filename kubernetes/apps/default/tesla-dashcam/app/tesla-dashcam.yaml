@@ -55,4 +55,4 @@ spec:
 
       nodeSelector:
         intel.feature.node.kubernetes.io/gpu: "true"
-        kubernetes.io/hostname: "truenas2012"
+        kubernetes.io/hostname: "node-3"

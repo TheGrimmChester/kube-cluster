@@ -79,5 +79,5 @@ spec:
 #              matchExpressions:
 #                - key: app.kubernetes.io/name
 #                  operator: In
-#                  values: [ "truenas2012" ]
+#                  values: [ "node-3" ]
 #            topologyKey: kubernetes.io/hostname

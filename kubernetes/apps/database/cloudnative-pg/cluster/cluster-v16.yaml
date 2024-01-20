@@ -15,8 +15,8 @@ spec:
               - key: kubernetes.io/hostname
                 operator: In
                 values:
-                  - truenas2012
-  #                  - truenas2012
+                  - node-3
+  #                  - node-3
 
   instances: 1
   imageName: ghcr.io/cloudnative-pg/postgresql:16
