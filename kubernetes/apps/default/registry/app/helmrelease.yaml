@@ -76,6 +76,7 @@ spec:
                   operator: In
                   values:
                     - truenas2012
+                    - worker-1
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim

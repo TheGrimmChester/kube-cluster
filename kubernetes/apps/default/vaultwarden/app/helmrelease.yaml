@@ -96,3 +96,4 @@ spec:
                   operator: In
                   values:
                     - truenas2012
+                    - worker-1
