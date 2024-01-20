@@ -34,7 +34,7 @@ spec:
                     - truenas2012
                     - worker-1
     controller:
-      replicas: 2
+      replicas: 1
       strategy: RollingUpdate
     image:
       repository: docker.io/glauth/glauth
