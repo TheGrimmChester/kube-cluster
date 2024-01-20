@@ -52,8 +52,8 @@ spec:
               - secretRef:
                   name: jdownloader-jdownloader2-secret
 
-            nodeSelector:
-              kubernetes/.io/hostname: "truenas2012"
+#            nodeSelector:
+#              kubernetes/.io/hostname: "truenas2012"
 
             securityContext:
               readOnlyRootFilesystem: false

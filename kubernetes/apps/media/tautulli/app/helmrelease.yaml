@@ -82,6 +82,6 @@ spec:
         memory: 250Mi
       limits:
         memory: 500Mi
-
-    nodeSelector:
-      kubernetes.io/hostname: "truenas2012"
+#
+#    nodeSelector:
+#      kubernetes.io/hostname: "truenas2012"
