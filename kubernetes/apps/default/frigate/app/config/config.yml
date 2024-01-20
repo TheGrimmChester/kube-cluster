@@ -68,8 +68,8 @@ go2rtc:
     frigate_front_lq: rtsp://{FRIGATE_RTSP_USER}:{FRIGATE_RTSP_PASSWORD}@192.168.1.70:554/h264Preview_01_sub
     frigate_back_hq: rtsp://{FRIGATE_RTSP_USER}:{FRIGATE_RTSP_PASSWORD}@192.168.1.65:554/h265Preview_01_main
     frigate_back_lq: rtsp://{FRIGATE_RTSP_USER}:{FRIGATE_RTSP_PASSWORD}@192.168.1.65:554/h264Preview_01_sub
-    frigate_office_hq: rtsp://{FRIGATE_RTSP_USER}:{FRIGATE_RTSP_PASSWORD}@192.168.1.193:554/h265Preview_01_main
-    frigate_office_lq: rtsp://{FRIGATE_RTSP_USER}:{FRIGATE_RTSP_PASSWORD}@192.168.1.193:554/h264Preview_01_sub
+#    frigate_office_hq: rtsp://{FRIGATE_RTSP_USER}:{FRIGATE_RTSP_PASSWORD}@192.168.1.193:554/h265Preview_01_main
+#    frigate_office_lq: rtsp://{FRIGATE_RTSP_USER}:{FRIGATE_RTSP_PASSWORD}@192.168.1.193:554/h264Preview_01_sub
 
 cameras:
   # --
@@ -129,23 +129,23 @@ cameras:
         car:
           mask:
             - 0,360,640,360,640,0,0,0
-  office:
-    ffmpeg:
-      inputs:
-        - path: rtsp://localhost:8554/frigate_office_lq
-          roles:
-            - detect
-        - path: rtsp://localhost:8554/frigate_office_hq
-          roles:
-            - record
-    detect:
-      height: 360
-      width: 640
-      fps: 10
-    objects:
-      filters:
-        person:
-          min_area: 1500
-          max_area: 100000
-          threshold: 0.75
-          min_score: 0.60
+#  office:
+#    ffmpeg:
+#      inputs:
+#        - path: rtsp://localhost:8554/frigate_office_lq
+#          roles:
+#            - detect
+#        - path: rtsp://localhost:8554/frigate_office_hq
+#          roles:
+#            - record
+#    detect:
+#      height: 360
+#      width: 640
+#      fps: 10
+#    objects:
+#      filters:
+#        person:
+#          min_area: 1500
+#          max_area: 100000
+#          threshold: 0.75
+#          min_score: 0.60
