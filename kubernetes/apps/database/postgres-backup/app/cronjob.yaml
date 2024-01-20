@@ -113,5 +113,4 @@ spec:
                 type: Directory
 
           nodeSelector:
-            intel.feature.node.kubernetes.io/gpu: "true"
             kubernetes.io/hostname: "truenas2012"
