@@ -113,4 +113,4 @@ spec:
                 type: Directory
 
           nodeSelector:
-            kubernetes.io/hostname: "node-3"
+            kubernetes.io/hostname: "worker-1"
