@@ -69,9 +69,9 @@ spec:
           automountServiceAccountToken: false
           enableServiceLinks: false
           securityContext:
-            runAsUser: 1031
-            runAsGroup: 1031
-            fsGroup: 1031
+            runAsUser: 473
+            runAsGroup: 3000
+            fsGroup: 3000
             supplementalGroups:
               - 65541
 
