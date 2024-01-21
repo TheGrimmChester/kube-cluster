@@ -209,6 +209,16 @@ spec:
               sslmode: "disable"
               database: "home_assistant"
               postgresVersion: '15'
+          - name: MyElectricalData
+            type: postgres
+            url: "postgres-v15-r.database.svc.cluster.local"
+            user: "${SECRET_USERNAME}"
+            secureJsonData:
+              password: "${SECRET_PASSWORD}"
+            jsonData:
+              sslmode: "disable"
+              database: "myelectricaldata"
+              postgresVersion: '15'
           - name: InfluxDB-MyElectricalData
             type: influxdb
             access: proxy
