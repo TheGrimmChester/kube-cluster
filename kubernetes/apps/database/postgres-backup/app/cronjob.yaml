@@ -103,14 +103,14 @@ spec:
           restartPolicy: OnFailure
 
           volumes:
-#            - name: nas-backups
-#              nfs:
-#                server: "192.168.1.98"
-#                path: /mnt/ssd_4to/minio/postgresql/dumps
             - name: nas-backups
-              hostPath:
+              nfs:
+                server: "192.168.1.32"
                 path: /mnt/ssd_4to/minio/postgresql/dumps
-                type: Directory
+#            - name: nas-backups
+#              hostPath:
+#                path: /mnt/ssd_4to/minio/postgresql/dumps
+#                type: Directory
 
           nodeSelector:
             kubernetes.io/hostname: "worker-1"
