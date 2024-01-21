@@ -18,7 +18,7 @@ spec:
                   - worker-1
                   - node-3
 
-  instances: 1
+  instances: 2
   imageName: ghcr.io/cloudnative-pg/postgresql:15.3
   primaryUpdateStrategy: unsupervised
   storage:
@@ -33,7 +33,7 @@ spec:
       - host all all all scram-sha-256
 #      - host  all   all  127.0.0.1/32  trust
 
-  logLevel: debug
+#  logLevel: debug
   monitoring:
     enablePodMonitor: true
 #  resources:
