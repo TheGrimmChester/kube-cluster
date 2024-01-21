@@ -76,7 +76,7 @@ spec:
               done
           env:
             - name: POSTGRES_HOST
-              value: postgres-v15-rw.default.svc.cluster.local
+              value: postgres-v15-rw.database.svc.cluster.local
         - name: wait-redis
           image: alpine:3.19.0
           imagePullPolicy: IfNotPresent
@@ -103,13 +103,13 @@ spec:
     externalDatabase:
       enabled: true
       type: postgresql
-      host: postgres-v15-rw.default.svc.cluster.local:5432
+      host: postgres-v15-rw.database.svc.cluster.local:5432
       database: nextcloud
       existingSecret:
         enabled: true
-        secretName: cloudnative-pg-secret
-        usernameKey: username
-        passwordKey: password
+        secretName: nextcloud-secret
+        usernameKey: database-username
+        passwordKey: database-password
     persistence:
       enabled: true
       existingClaim: nextcloud-config

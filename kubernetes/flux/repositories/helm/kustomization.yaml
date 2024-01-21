@@ -35,3 +35,4 @@ resources:
   - ./runix.yaml
   - ./external-secrets.yaml
   - ./descheduler.yaml
+  - ./nextcloud-charts.yaml
