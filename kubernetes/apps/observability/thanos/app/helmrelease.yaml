@@ -105,7 +105,7 @@ spec:
       ingress:
         enabled: true
         hostname: &host "thanos-compactor.${SECRET_DOMAIN}"
-        ingressClassName: "external"
+        ingressClassName: "internal"
         annotations:
           hajimari.io/enable: "false"
         tls: true
