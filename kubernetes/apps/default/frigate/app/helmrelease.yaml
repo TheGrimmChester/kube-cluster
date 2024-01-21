@@ -127,7 +127,7 @@ spec:
 #        mountPath: "/media/frigate/recordings"
         enabled: true
         type: nfs
-        server: "192.168.1.49"
+        server: "192.168.1.32"
         path: /mnt/ssd_4to/cameras/frigate
         mountPath: /media/frigate/recordings
         readOnly: false
