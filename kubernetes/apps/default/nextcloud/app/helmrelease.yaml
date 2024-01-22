@@ -70,11 +70,11 @@ spec:
     nextcloud:
 #      podSecurityContext:
 #        supplementalGroups:
-#          - 33
+#          - 82
       host: *host
       securityContext:
         runAsUser: 568
-        runAsGroup: 33
+        runAsGroup: 82
         runAsNonRoot: true
         readOnlyRootFilesystem: false
       existingSecret:
@@ -95,7 +95,7 @@ spec:
           args:
             - -c
             - >-
-              until nc -w 1 -v $MYSQL_HOST:3306 || nc -w 1 -v $POSTGRES_HOST:5432;
+              until nc -w 1 -v $MYSQL_HOST:8206 || nc -w 1 -v $POSTGRES_HOST:5432;
               do echo "Waiting for database";
               done
           env:
@@ -151,7 +151,7 @@ spec:
       config:
         default: true
       securityContext:
-        runAsGroup: 33
+        runAsGroup: 82
 
     internalDatabase:
       enabled: false
@@ -174,7 +174,7 @@ spec:
     cronjob:
       enabled: true
       securityContext:
-        runAsGroup: 33
+        runAsGroup: 82
     securityContext:
       fsGroupChangePolicy: OnRootMismatch
 #    resources:
