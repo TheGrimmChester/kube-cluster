@@ -61,6 +61,8 @@ spec:
           location ~ ^/(?:autotest|occ|issue|indie|db_|console) {
             deny all;
           }
+      path: /
+      pathType: Prefix
       tls:
         - hosts:
             - &host nextcloud.${SECRET_DOMAIN}
