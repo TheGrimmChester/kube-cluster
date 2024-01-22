@@ -30,7 +30,7 @@ spec:
       flavor: fpm-alpine
     ingress:
       enabled: true
-      className: external
+      className: nginx
       annotations:
         external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
         nginx.ingress.kubernetes.io/proxy-body-size: 512M
@@ -50,7 +50,7 @@ spec:
       tls:
         - hosts:
             - &host nextcloud.${SECRET_DOMAIN}
-#          secretName: ${SECRET_DOMAIN//./-}-prod-tls
+          secretName: ${SECRET_DOMAIN//./-}-prod-tls
     nextcloud:
       host: *host
       existingSecret:
