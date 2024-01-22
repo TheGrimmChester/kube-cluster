@@ -134,12 +134,12 @@ spec:
         existingClaim: nextcloud-data
     cronjob:
       enabled: true
-    resources:
-      requests:
-        cpu: 34m
-        memory: 204Mi
-      limits:
-        memory: 363Mi
+#    resources:
+#      requests:
+#        cpu: 34m
+#        memory: 204Mi
+#      limits:
+#        memory: 363Mi
     # this seems to be required for nextcloud initialization which takes a long time
     startupProbe:
       enabled: true
