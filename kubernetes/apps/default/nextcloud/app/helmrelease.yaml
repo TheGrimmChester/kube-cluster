@@ -135,7 +135,7 @@ spec:
             array (
               0 => 'HTTP_X_FORWARDED_FOR',
             ),
-            'overwrite.cli.url' => 'https://cloud.${SECRET_DOMAIN}',
+            'overwrite.cli.url' => 'https://nextcloud.${SECRET_DOMAIN}',
             'default_phone_region' => 'FR',
             'trashbin_retention_obligation' => 'auto, 30',
             'auth.bruteforce.protection.enabled' => true,
