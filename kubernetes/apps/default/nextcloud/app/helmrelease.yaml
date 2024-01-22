@@ -68,9 +68,9 @@ spec:
             - &host nextcloud.${SECRET_DOMAIN}
 #          secretName: ${SECRET_DOMAIN//./-}-prod-tls
     nextcloud:
-      podSecurityContext:
-        supplementalGroups:
-          - 33
+#      podSecurityContext:
+#        supplementalGroups:
+#          - 33
       host: *host
       existingSecret:
         enabled: true
