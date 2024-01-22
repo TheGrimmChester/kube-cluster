@@ -109,9 +109,9 @@ spec:
               value: "6379"
     nginx:
       enabled: true
-      image:
-        repository: nginx
-        tag: 1.25-alpine
+#      image:
+#        repository: nginx
+#        tag: 1.25-alpine
     internalDatabase:
       enabled: false
     externalDatabase:
