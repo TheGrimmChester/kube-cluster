@@ -72,6 +72,11 @@ spec:
 #        supplementalGroups:
 #          - 33
       host: *host
+      securityContext:
+        runAsUser: 568
+        runAsGroup: 33
+        runAsNonRoot: true
+        readOnlyRootFilesystem: false
       existingSecret:
         enabled: true
         secretName: nextcloud-secret
@@ -112,6 +117,26 @@ spec:
               value: redis-headless.database.svc.cluster.local
             - name: REDIS_HOST_PORT
               value: "6379"
+      configs:
+        local.config.php: |-
+          <?php
+          $CONFIG = array (
+            'trusted_proxies' =>
+            array (
+              0 => '127.0.0.1',
+              1 => '172.16.0.0/12',
+              2 => '10.0.0.0/8',
+              3 => '192.168.0.0/16',
+            ),
+            'forwarded_for_headers' =>
+            array (
+              0 => 'HTTP_X_FORWARDED_FOR',
+            ),
+            'default_phone_region' => 'PL',
+            'trashbin_retention_obligation' => 'auto, 30',
+            'auth.bruteforce.protection.enabled' => true,
+          );
+
 #    nginx:
 #      enabled: true
 ##      image:
@@ -125,6 +150,8 @@ spec:
         tag: "1.25.3"
       config:
         default: true
+      securityContext:
+        runAsGroup: 33
 
     internalDatabase:
       enabled: false
@@ -146,6 +173,10 @@ spec:
         existingClaim: nextcloud-data
     cronjob:
       enabled: true
+      securityContext:
+        runAsGroup: 33
+    securityContext:
+      fsGroupChangePolicy: OnRootMismatch
 #    resources:
 #      requests:
 #        cpu: 34m
