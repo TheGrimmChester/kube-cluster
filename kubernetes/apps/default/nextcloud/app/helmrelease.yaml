@@ -68,6 +68,9 @@ spec:
             - &host nextcloud.${SECRET_DOMAIN}
 #          secretName: ${SECRET_DOMAIN//./-}-prod-tls
     nextcloud:
+      podSecurityContext:
+        supplementalGroups:
+          - 33
       host: *host
       existingSecret:
         enabled: true
@@ -109,11 +112,11 @@ spec:
               value: redis-headless.database.svc.cluster.local
             - name: REDIS_HOST_PORT
               value: "6379"
-    nginx:
-      enabled: true
-#      image:
-#        repository: nginx
-#        tag: 1.25-alpine
+#    nginx:
+#      enabled: true
+##      image:
+##        repository: nginx
+##        tag: 1.25-alpine
     internalDatabase:
       enabled: false
     externalDatabase:
