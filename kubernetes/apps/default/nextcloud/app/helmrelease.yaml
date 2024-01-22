@@ -128,13 +128,17 @@ spec:
               2 => '10.0.0.0/8',
               3 => '192.168.0.0/16',
             ),
+            'default_language' => 'fr',
+            'default_locale' => 'fr_FR',
             'forwarded_for_headers' =>
             array (
               0 => 'HTTP_X_FORWARDED_FOR',
             ),
-            'default_phone_region' => 'PL',
+            'default_phone_region' => 'FR',
             'trashbin_retention_obligation' => 'auto, 30',
             'auth.bruteforce.protection.enabled' => true,
+            'filesystem_check_changes' => 1,
+            'overwriteprotocol' => 'https',
           );
 
 #    nginx:
