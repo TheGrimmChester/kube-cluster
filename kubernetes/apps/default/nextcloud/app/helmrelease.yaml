@@ -127,6 +127,7 @@ spec:
               1 => '172.16.0.0/12',
               2 => '10.0.0.0/8',
               3 => '192.168.0.0/16',
+              4 => 'external.${SECRET_DOMAIN}',
             ),
             'default_language' => 'fr',
             'default_locale' => 'fr_FR',
@@ -134,6 +135,7 @@ spec:
             array (
               0 => 'HTTP_X_FORWARDED_FOR',
             ),
+            'overwrite.cli.url' => 'https://cloud.${SECRET_DOMAIN}',
             'default_phone_region' => 'FR',
             'trashbin_retention_obligation' => 'auto, 30',
             'auth.bruteforce.protection.enabled' => true,
