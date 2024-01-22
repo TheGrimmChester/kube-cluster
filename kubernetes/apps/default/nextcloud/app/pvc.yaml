@@ -4,10 +4,10 @@ kind: PersistentVolume
 metadata:
   name: nextcloud-config
 spec:
+  storageClassName: nextcloud-config
   capacity:
     storage: 1Mi # Size does not matter
   accessModes: ["ReadWriteMany"]
-  storageClassName: nextcloud-config
   persistentVolumeReclaimPolicy: Retain
   nfs:
     server: 192.168.1.101
@@ -34,10 +34,10 @@ kind: PersistentVolume
 metadata:
   name: nextcloud-data
 spec:
+  storageClassName: nextcloud-data
   capacity:
     storage: 1Mi # Size does not matter
   accessModes: ["ReadWriteMany"]
-  storageClassName: nextcloud-data
   persistentVolumeReclaimPolicy: Retain
   nfs:
     server: 192.168.1.101
