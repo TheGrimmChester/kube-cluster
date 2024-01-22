@@ -72,11 +72,11 @@ spec:
 #        supplementalGroups:
 #          - 82
       host: *host
-      securityContext:
-        runAsUser: 568
-        runAsGroup: 82
-        runAsNonRoot: true
-        readOnlyRootFilesystem: false
+#      securityContext:
+#        runAsUser: 568
+#        runAsGroup: 82
+#        runAsNonRoot: true
+#        readOnlyRootFilesystem: false
       existingSecret:
         enabled: true
         secretName: nextcloud-secret
@@ -150,8 +150,8 @@ spec:
         tag: "1.25.3"
       config:
         default: true
-      securityContext:
-        runAsGroup: 82
+#      securityContext:
+#        runAsGroup: 82
 
     internalDatabase:
       enabled: false
@@ -173,8 +173,8 @@ spec:
         existingClaim: nextcloud-data
     cronjob:
       enabled: true
-      securityContext:
-        runAsGroup: 82
+#      securityContext:
+#        runAsGroup: 82
     securityContext:
       fsGroupChangePolicy: OnRootMismatch
 #    resources:
