@@ -30,7 +30,7 @@ spec:
       type: statefulset
     image:
       repository: ghcr.io/dgtlmoon/changedetection.io
-      tag: latest@sha256:a4106d648125d942d966b2ab480e812c5ddf50b38976d398856cf06e691a5000
+      tag: latest@sha256:e1cff3791d2089747031b229fa54001670501d38e39a2413fbccc5973431729e
     env:
       TZ: Europe/Paris
       PORT: &port 5000
