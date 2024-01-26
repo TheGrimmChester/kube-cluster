@@ -87,8 +87,8 @@ spec:
 #            path: /app/config/docker.yaml
           - subPath: kubernetes.yaml
             path: /app/config/kubernetes.yaml
-#          - subPath: services.yaml
-#            path: /app/config/services.yaml
+          - subPath: services.yaml
+            path: /app/config/services.yaml
 #          - subPath: settings.yaml
 #            path: /app/config/settings.yaml
 #          - subPath: widgets.yaml
