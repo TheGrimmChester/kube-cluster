@@ -46,15 +46,18 @@ record:
     retain:
       default: 2
       mode: active_objects
+    required_zones:
+      - portail
+      - porte_entree
 
 objects:
   track:
     - person
-    - dog
+#    - dog
     - car
     - door
-    - bird
-    - cat
+#    - bird
+#    - cat
 
   filters:
     person:
