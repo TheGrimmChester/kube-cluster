@@ -23,4 +23,4 @@ resources:
 #  - ./tesla-dashcam/ks.yaml
   - ./joplin/ks.yaml
 #  - ./nextcloud/ks.yaml
-#  - ./homepage/ks.yaml
+  - ./homepage/ks.yaml
