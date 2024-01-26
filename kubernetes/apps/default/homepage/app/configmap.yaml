@@ -40,22 +40,22 @@ data:
               accountid: {{ HOMEPAGE_VAR_CLOUDFLARED_ACCOUNTID }}
               tunnelid: {{ HOMEPAGE_VAR_CLOUDFLARED_TUNNELID }}
               key: {{ HOMEPAGE_VAR_CLOUDFLARED_API_TOKEN }}
-              settings.yaml: |
-                title: Dashboard
-                theme: dark
-                color: slate
-                headerStyle: clean
-                layout:
-                  Home:
-                    style: column
-                    icon: mdi-home-analytics
-                  Network:
-                    style: row
-                    columns: 3
-                    icon: mdi-server
-                  Observability:
-                    style: column
-                    icon: mdi-chart-line
+#              settings.yaml: |
+#                title: Dashboard
+#                theme: dark
+#                color: slate
+#                headerStyle: clean
+#                layout:
+#                  Home:
+#                    style: column
+#                    icon: mdi-home-analytics
+#                  Network:
+#                    style: row
+#                    columns: 3
+#                    icon: mdi-server
+#                  Observability:
+#                    style: column
+#                    icon: mdi-chart-line
   widgets.yaml: |
     - resources:
         backend: kubernetes
