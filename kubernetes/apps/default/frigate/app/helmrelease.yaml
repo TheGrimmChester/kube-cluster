@@ -120,15 +120,18 @@ spec:
 #        hostPath: "/mnt/Services/camera/frigate"
 #        mountPath: "/media/frigate/recordings"
 
-      recs:
-#        enabled: true
-#        type: hostPath
-#        hostPath: "/mnt/ssd_4to/cameras/frigate"
-#        mountPath: "/media/frigate/recordings"
+      snapshots:
         enabled: true
         type: nfs
         server: "192.168.1.32"
-        path: /mnt/ssd_4to/cameras/frigate
+        path: /mnt/ssd_4to/cameras/frigate/snapshots
+        mountPath: /media/frigate/clips
+        readOnly: false
+      recordings:
+        enabled: true
+        type: nfs
+        server: "192.168.1.32"
+        path: /mnt/ssd_4to/cameras/frigate/recordings
         mountPath: /media/frigate/recordings
         readOnly: false
       cache:
@@ -137,7 +140,6 @@ spec:
         medium: Memory
         sizeLimit: 4Gi
         mountPath: /dev/shm
-
       usb:
         enabled: true
         type: hostPath
