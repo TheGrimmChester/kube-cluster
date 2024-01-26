@@ -49,6 +49,7 @@ record:
     required_zones:
       - portail
       - porte_entree
+      - back_outdoor
 
 objects:
   track:
@@ -105,6 +106,8 @@ cameras:
         coordinates: 35,339,209,188,172,32,0,102
       parking:
         coordinates: 571,221,585,45,492,26,261,152
+      back_outdoor:
+        coordinates: 640,360,640,119,0,119,0,360
     motion:
       mask:
           - 154,0,0,46,0,0
