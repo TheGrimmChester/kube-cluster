@@ -8,7 +8,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 2.4.0
+      version: 2.5.0
       interval: 30m
       sourceRef:
         kind: HelmRepository
@@ -28,16 +28,15 @@ spec:
   values:
     controllers:
       main:
-        annotations:
-          reloader.stakater.com/auto: "true"
+        pod:
+          annotations:
+            configmap.reloader.stakater.com/reload: homepage-config
+            secret.reloader.stakater.com/reload: homepage-secret
         containers:
           main:
             image:
               repository: ghcr.io/gethomepage/homepage
-              tag: v0.8.6
-            env:
-              TZ: "${TIMEZONE}"
-              SECRET_DOMAIN: "${SECRET_DOMAIN}"
+              tag: v0.8.7
             envFrom:
               - secretRef:
                   name: homepage-secret

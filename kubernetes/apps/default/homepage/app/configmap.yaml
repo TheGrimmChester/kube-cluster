@@ -37,23 +37,22 @@ data:
             description: Cloudflared Tunnel
             widget:
               type: cloudflared
-              accountid: {{ HOMEPAGE_VAR_CLOUDFLARED_ACCOUNTID }}
-              tunnelid: {{ HOMEPAGE_VAR_CLOUDFLARED_TUNNELID }}
-              key: {{ HOMEPAGE_VAR_CLOUDFLARED_API_TOKEN }}
+              accountid: {{HOMEPAGE_VAR_CLOUDFLARED_ACCOUNTID}}
+              tunnelid: {{HOMEPAGE_VAR_CLOUDFLARED_TUNNELID}}
+              key: {{HOMEPAGE_VAR_CLOUDFLARED_API_TOKEN}}
     - Security:
         - Frigate:
-            href: https://frigate.{{ SECRET_DOMAIN }}/birdseye
+            href: https://frigate.{{HOMEPAGE_VAR_SECRET_DOMAIN}}/birdseye
             widget:
               type: iframe
               name: myIframe
-              src: https://frigate.{{ SECRET_DOMAIN }}/birdseye
+              src: https://frigate.{{HOMEPAGE_VAR_SECRET_DOMAIN}}/birdseye
               classes: h-60 sm:h-60 md:h-60 lg:h-60 xl:h-60 2xl:h-72 # optional, use tailwind height classes, see https://tailwindcss.com/docs/height
               referrerPolicy: same-origin # optional, no default
               allowPolicy: autoplay; fullscreen; gamepad # optional, no default
-              allowFullscreen: false # optional, default: true
+              allowFullscreen: true # optional, default: true
               loadingStrategy: eager # optional, default: eager
-              allowScrolling: no # optional, default: yes
-              refreshInterval: 2000 # optional, no default
+              allowScrolling: yes # optional, default: yes
 
   settings.yaml: |
     title: Dashboard
