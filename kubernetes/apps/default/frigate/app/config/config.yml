@@ -36,6 +36,7 @@ snapshots:
 birdseye:
   enabled: True
   mode: continuous
+  restream: true
 
 record:
   enabled: true
