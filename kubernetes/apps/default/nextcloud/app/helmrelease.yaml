@@ -88,7 +88,7 @@ spec:
           value: "6379"
       extraInitContainers:
         - name: wait-database
-          image: alpine:3.19.0
+          image: alpine:3.19.1
           imagePullPolicy: IfNotPresent
           command:
             - sh
@@ -102,7 +102,7 @@ spec:
             - name: POSTGRES_HOST
               value: postgres-v15-rw.database.svc.cluster.local
         - name: wait-redis
-          image: alpine:3.19.0
+          image: alpine:3.19.1
           imagePullPolicy: IfNotPresent
           command:
             - sh
