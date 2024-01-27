@@ -57,12 +57,12 @@ data:
               url: https://nas.{{HOMEPAGE_VAR_SECRET_DOMAIN}}
               key: {{HOMEPAGE_VAR_TRUENAS_TOKEN}}
         - Proxmox:
-            href: https://pve.{{HOMEPAGE_VAR_SECRET_DOMAIN}}
+            href: {{HOMEPAGE_VAR_PROXMOX_URL}}
             icon: proxmox.png
             description: Hypervisor
             widget:
               type: proxmox
-              url: https://pve.{{HOMEPAGE_VAR_SECRET_DOMAIN}}
+              url: {{HOMEPAGE_VAR_PROXMOX_URL}}
               username: {{HOMEPAGE_VAR_PROXMOX_TOKEN_ID}}
               password: {{HOMEPAGE_VAR_PROXMOX_TOKEN_SECRET}}
         - Minio:
