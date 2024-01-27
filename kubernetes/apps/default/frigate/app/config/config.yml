@@ -67,6 +67,10 @@ objects:
       threshold: 0.7
 
 go2rtc:
+  rtsp:
+    user: "{FRIGATE_MQTT_USER}"
+    password: "{FRIGATE_MQTT_PASSWORD}"
+
   streams:
     frigate_front_hq: rtsp://{FRIGATE_RTSP_USER}:{FRIGATE_RTSP_PASSWORD}@192.168.1.70:554/h265Preview_01_main
     frigate_front_lq: rtsp://{FRIGATE_RTSP_USER}:{FRIGATE_RTSP_PASSWORD}@192.168.1.70:554/h264Preview_01_sub

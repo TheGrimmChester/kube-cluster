@@ -44,15 +44,19 @@ data:
         - Frigate:
             href: https://frigate.{{HOMEPAGE_VAR_SECRET_DOMAIN}}/birdseye
             widget:
-              type: iframe
-              name: myIframe
-              src: https://frigate.{{HOMEPAGE_VAR_SECRET_DOMAIN}}/birdseye
-              classes: h-60 sm:h-60 md:h-60 lg:h-60 xl:h-60 2xl:h-72 # optional, use tailwind height classes, see https://tailwindcss.com/docs/height
-              referrerPolicy: same-origin # optional, no default
-              allowPolicy: autoplay; fullscreen; gamepad # optional, no default
-              allowFullscreen: true # optional, default: true
-              loadingStrategy: eager # optional, default: eager
-              allowScrolling: yes # optional, default: yes
+              type: mjpeg
+              stream: rtsp://frigate.{{HOMEPAGE_VAR_SECRET_DOMAIN}}/birdseye
+
+#            widget:
+#              type: iframe
+#              name: myIframe
+#              src: https://frigate.{{HOMEPAGE_VAR_SECRET_DOMAIN}}/birdseye
+#              classes: h-60 sm:h-60 md:h-60 lg:h-60 xl:h-60 2xl:h-72 # optional, use tailwind height classes, see https://tailwindcss.com/docs/height
+#              referrerPolicy: same-origin # optional, no default
+#              allowPolicy: autoplay; fullscreen; gamepad # optional, no default
+#              allowFullscreen: true # optional, default: true
+#              loadingStrategy: eager # optional, default: eager
+#              allowScrolling: yes # optional, default: yes
 
   settings.yaml: |
     title: Dashboard
