@@ -68,10 +68,10 @@ spec:
             - &host nextcloud.${SECRET_DOMAIN}
 #          secretName: ${SECRET_DOMAIN//./-}-prod-tls
     nextcloud:
-      securityContext:
-        runAsUser: 1022
-        runAsGroup: 1022
-        runAsNonRoot: true
+#      securityContext:
+#        runAsUser: 1022
+#        runAsGroup: 1022
+#        runAsNonRoot: true
 
 #      podSecurityContext:
 #        supplementalGroups:
