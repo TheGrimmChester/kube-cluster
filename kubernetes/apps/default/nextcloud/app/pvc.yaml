@@ -13,7 +13,7 @@ spec:
     server: 192.168.1.101
     path: /mnt/Backup/nextcloud/config
   # Note: The first two options are strictly for NFSv4.2
-  mountOptions: ["nfsvers=4", "nconnect=8", "hard", "noatime"]
+  mountOptions: ["nfsvers=4.2", "nconnect=8", "hard"]
 
 ---
 apiVersion: v1
@@ -43,7 +43,7 @@ spec:
     server: 192.168.1.101
     path: /mnt/Backup/nextcloud/data
   # Note: The first two options are strictly for NFSv4.2
-  mountOptions: ["nfsvers=4", "nconnect=8", "hard", "noatime"]
+  mountOptions: ["nfsvers=4.2", "nconnect=8", "hard"]
 
 ---
 apiVersion: v1
