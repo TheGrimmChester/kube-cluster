@@ -85,7 +85,7 @@ spec:
       existingSecret:
         enabled: true
         secretName: nextcloud-secret
-      datadir: /var/www/html/data
+      datadir: /var/www/data
       extraEnv:
         - name: REDIS_HOST
           value: redis
@@ -182,12 +182,13 @@ spec:
       nextcloudData:
         enabled: true
         existingClaim: nextcloud-data
+        accessMode: ReadWriteMany
     cronjob:
       enabled: true
 #      securityContext:
 #        runAsGroup: 82
-    securityContext:
-      fsGroupChangePolicy: OnRootMismatch
+#    securityContext:
+#      fsGroupChangePolicy: OnRootMismatch
 #    resources:
 #      requests:
 #        cpu: 34m
