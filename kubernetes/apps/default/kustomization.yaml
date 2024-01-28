@@ -22,5 +22,5 @@ resources:
   - ./paperless/ks.yaml
 #  - ./tesla-dashcam/ks.yaml
   - ./joplin/ks.yaml
-  - ./nextcloud/ks.yaml
+#  - ./nextcloud/ks.yaml
   - ./homepage/ks.yaml
