@@ -37,6 +37,7 @@ spec:
                 - key: kubernetes.io/hostname
                   operator: In
                   values:
+                    - khadas
                     - node-3
                     - worker-1
     controller:
