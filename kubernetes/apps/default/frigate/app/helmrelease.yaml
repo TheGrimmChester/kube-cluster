@@ -141,7 +141,7 @@ spec:
         path: /mnt/ssd_4to/cameras/frigate/exports
         mountPath: /media/frigate/exports
         readOnly: false
-      recording_cache:
+      recording-cache:
         enabled: true
         type: emptyDir
         medium: Memory
