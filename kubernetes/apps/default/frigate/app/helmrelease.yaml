@@ -134,6 +134,13 @@ spec:
         path: /mnt/ssd_4to/cameras/frigate/recordings
         mountPath: /media/frigate/recordings
         readOnly: false
+      exports:
+        enabled: true
+        type: nfs
+        server: "192.168.1.32"
+        path: /mnt/ssd_4to/cameras/frigate/exports
+        mountPath: /media/frigate/exports
+        readOnly: false
       cache:
         enabled: true
         type: emptyDir
