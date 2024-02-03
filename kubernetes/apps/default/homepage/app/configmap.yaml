@@ -6,10 +6,6 @@ metadata:
   labels:
     app.kubernetes.io/name: homepage
 data:
-  layout.yaml: |
-    Home Automation:
-    style: row
-    columns: 4
   bookmarks.yaml: |
     - Media:
         - YouTube:
@@ -76,16 +72,14 @@ data:
     color: slate
     headerStyle: clean
     layout:
-      Home:
-        style: column
-        icon: mdi-home-analytics
-      Network:
-        style: row
-        columns: 3
-        icon: mdi-server
-      Observability:
-        style: column
-        icon: mdi-chart-line
+      - Application-Service:
+      - Monitoring:
+      - Média:
+      - Home-Automation:
+      - Stockage:
+          style: row
+          columns: 3
+
   widgets.yaml: |
     - kubernetes:
         cluster:
