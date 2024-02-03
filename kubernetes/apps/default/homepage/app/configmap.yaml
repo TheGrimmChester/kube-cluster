@@ -103,7 +103,7 @@ data:
           memory: true
           showLabel: true
     - search:
-        provider: [google]
+        provider: google
         focus: false
         target: _blank
     - greeting:
