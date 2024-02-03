@@ -54,6 +54,11 @@ spec:
             sub_filter '</head>' '<link rel="stylesheet" type="text/css" href="https://theme-park.${SECRET_DOMAIN}/css/base/tautulli/nord.css"></head>';
             sub_filter_once on;
           hajimari.io/icon: mdi:chart-bar
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: "Tautulli"
+          gethomepage.dev/description: "Plex monitoring"
+          gethomepage.dev/group: Média
+          gethomepage.dev/icon: "tautulli.png"
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
             paths:

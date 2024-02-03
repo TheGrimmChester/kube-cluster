@@ -115,6 +115,11 @@ spec:
 
           hajimari.io/icon: simple-icons:sickchill
           hajimari.io/enable: "true"
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: "Sickchill"
+          gethomepage.dev/description: ""
+          gethomepage.dev/group: Média
+          gethomepage.dev/icon: "sickchill.png"
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
             paths:
