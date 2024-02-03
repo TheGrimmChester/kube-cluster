@@ -75,9 +75,9 @@ spec:
           nginx.ingress.kubernetes.io/auth-snippet: |
             proxy_set_header X-Forwarded-Method $request_method;
           gethomepage.dev/enabled: "true"
-          gethomepage.dev/name: "Monitoring"
+          gethomepage.dev/name: "Teslamate"
           gethomepage.dev/description: ""
-          gethomepage.dev/group: Média
+          gethomepage.dev/group: Monitoring
           gethomepage.dev/icon: "teslamate.png"
         ingressClassName: "external"
         hosts:
