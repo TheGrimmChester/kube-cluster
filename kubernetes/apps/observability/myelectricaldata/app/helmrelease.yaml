@@ -67,7 +67,7 @@ spec:
           gethomepage.dev/name: "MyElectricalData"
           gethomepage.dev/description: "Info consommation Enedis"
           gethomepage.dev/group: Monitoring
-#          gethomepage.dev/icon: "home-assistant.png"
+          gethomepage.dev/icon: "https://myelectricaldata.clouded.fr/favicon.ico"
 
         ingressClassName: "external"
         hosts:
