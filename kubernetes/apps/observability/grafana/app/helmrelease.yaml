@@ -447,6 +447,12 @@ spec:
       annotations:
         external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
         hajimari.io/icon: simple-icons:grafana
+        gethomepage.dev/enabled: "true"
+        gethomepage.dev/name: "Grafana"
+        gethomepage.dev/description: "Graph détaillés"
+        gethomepage.dev/group: Monitoring
+        gethomepage.dev/icon: "grafana.png"
+
       hosts:
         - &host "grafana.${SECRET_DOMAIN}"
       tls:
