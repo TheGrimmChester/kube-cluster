@@ -33,14 +33,6 @@ data:
   kubernetes.yaml: |
     mode: cluster
   services.yaml: |
-    - Automation:
-        - Home Assistant:
-            href: https://hass.{{HOMEPAGE_VAR_SECRET_DOMAIN}}
-            icon: home-assistant.svg
-            widget:
-              type: homeassistant
-              url: https://hass.{{HOMEPAGE_VAR_SECRET_DOMAIN}}
-              key: {{HOMEPAGE_VAR_HASS_TOKEN}}
     - Infrastructure:
         - Cloudflared:
             href: https://dash.cloudflare.com
