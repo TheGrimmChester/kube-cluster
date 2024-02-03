@@ -67,7 +67,7 @@ spec:
           gethomepage.dev/enabled: "true"
           gethomepage.dev/name: "Vaultwarden"
           gethomepage.dev/description: "Gestionnaire de mots de passe"
-          gethomepage.dev/group: Média
+          gethomepage.dev/group: Application Service
           gethomepage.dev/icon: "vaultwarden.png"
         hosts:
           - host: vault.${SECRET_DOMAIN}
