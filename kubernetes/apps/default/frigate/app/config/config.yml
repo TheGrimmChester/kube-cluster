@@ -143,6 +143,16 @@ cameras:
       height: 360
       width: 640
       fps: 10
+    zones:
+      zone_0:
+        coordinates: 0,360,640,360,383,267,364,122,0,133
+        objects:
+          - person
+      zone_1:
+        coordinates: 640,121,640,360,405,360,412,120
+        objects:
+          - person
+
     objects:
       filters:
         person:
@@ -150,9 +160,6 @@ cameras:
           max_area: 100000
           threshold: 0.75
           min_score: 0.60
-          mask:
-            - 409,257,467,360,539,119,403,121
-            - 0,360,391,360,416,283,379,257,370,140,0,152
         car:
           mask:
             - 0,360,640,360,640,0,0,0
