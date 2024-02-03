@@ -153,16 +153,16 @@ cameras:
         objects:
           - person
 
-    objects:
-      filters:
-        person:
-          min_area: 1500
-          max_area: 100000
-          threshold: 0.75
-          min_score: 0.60
-        car:
-          mask:
-            - 0,360,640,360,640,0,0,0
+#    objects:
+#      filters:
+#        person:
+#          min_area: 1500
+#          max_area: 100000
+#          threshold: 0.75
+#          min_score: 0.60
+#        car:
+#          mask:
+#            - 0,360,640,360,640,0,0,0
 
 #  office:
 #    ffmpeg:
