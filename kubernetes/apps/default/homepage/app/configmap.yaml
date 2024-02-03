@@ -6,6 +6,10 @@ metadata:
   labels:
     app.kubernetes.io/name: homepage
 data:
+  layout.yaml: |
+    Home Automation:
+    style: row
+    columns: 4
   bookmarks.yaml: |
     - Media:
         - YouTube:
