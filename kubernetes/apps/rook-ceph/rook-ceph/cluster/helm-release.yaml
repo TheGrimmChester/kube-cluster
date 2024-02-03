@@ -170,6 +170,11 @@ spec:
           hajimari.io/appName: "Rook"
           hajimari.io/icon: mdi:chess-rook
           hajimari.io/group: admin
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: "Rook"
+          gethomepage.dev/description: "Espace de stockage"
+          gethomepage.dev/group: Stockage
+          gethomepage.dev/icon: "rook.png"
         host:
           name: &host "rook.${SECRET_DOMAIN}"
           path: /
