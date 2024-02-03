@@ -95,6 +95,12 @@ spec:
           hajimari.io/icon: mdi:download-box
           hajimari.io/enable: "true"
           hajimari.io/appName: "JD2"
+
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: "JDownloader2"
+          gethomepage.dev/description: ""
+          gethomepage.dev/group: Média
+          gethomepage.dev/icon: "jdownloader.png"
         hosts:
           - host: &host jd2.${SECRET_DOMAIN}
             paths:

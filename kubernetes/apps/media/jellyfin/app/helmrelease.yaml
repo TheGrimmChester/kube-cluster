@@ -72,6 +72,11 @@ spec:
 #            10.0.0.0/8,172.16.0.0/12,192.168.0.0/16
           hajimari.io/icon: simple-icons:jellyfin
           hajimari.io/enable: "true"
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: "Jellyfin"
+          gethomepage.dev/description: ""
+          gethomepage.dev/group: Média
+          gethomepage.dev/icon: "jellyfin.png"
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
             paths:
