@@ -72,6 +72,11 @@ spec:
           hajimari.io/enable: "true"
 #          hajimari.io/group: "home"
           hajimari.io/icon: "home-assistant"
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: "Home Assistant Chris"
+          gethomepage.dev/description: ""
+          gethomepage.dev/group: Home Automation
+          gethomepage.dev/icon: "homeassistant.png"
         hosts:
           - host: &host "hass-c.${SECRET_DOMAIN}"
             paths:

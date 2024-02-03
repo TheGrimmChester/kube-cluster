@@ -118,6 +118,11 @@ spec:
           nginx.ingress.kubernetes.io/auth-response-headers: Remote-User,Remote-Name,Remote-Groups,Remote-Email
           nginx.ingress.kubernetes.io/auth-snippet: |
             proxy_set_header X-Forwarded-Method $request_method;
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: "Zigbee2MQTT"
+          gethomepage.dev/description: ""
+          gethomepage.dev/group: Home Automation
+          gethomepage.dev/icon: "zigbee2mqtt.png"
         ingressClassName: "external"
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
