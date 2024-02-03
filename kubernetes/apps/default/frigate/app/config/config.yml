@@ -76,9 +76,10 @@ objects:
 
   filters:
     person:
-      min_area: 5000
+      min_area: 1500
       max_area: 100000
-      threshold: 0.7
+      threshold: 0.75
+      min_score: 0.60
 
 go2rtc:
   rtsp:
