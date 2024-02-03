@@ -65,21 +65,21 @@ record:
       - porte_entree
       - back_outdoor
 
-objects:
-  track:
-    - person
-#    - dog
-    - car
-    - door
-#    - bird
-#    - cat
-
-  filters:
-    person:
-      min_area: 1500
-      max_area: 100000
-      threshold: 0.75
-      min_score: 0.60
+#objects:
+#  track:
+#    - person
+##    - dog
+#    - car
+#    - door
+##    - bird
+##    - cat
+#
+#  filters:
+#    person:
+#      min_area: 1500
+#      max_area: 100000
+#      threshold: 0.75
+#      min_score: 0.60
 
 go2rtc:
   rtsp:
@@ -110,6 +110,11 @@ cameras:
       width: 640
       fps: 10
     objects:
+      track:
+        - person
+        #    - dog
+        - car
+        - door
       filters:
         person:
           min_area: 1500
@@ -134,16 +139,16 @@ cameras:
   back:
     ffmpeg:
       inputs:
-#        - path: rtsp://localhost:8554/frigate_back_lq
-#          roles:
-#            - detect
+        - path: rtsp://localhost:8554/frigate_back_lq
+          roles:
+            - detect
         - path: rtsp://localhost:8554/frigate_back_hq
           roles:
             - record
-#    detect:
-#      height: 360
-#      width: 640
-#      fps: 10
+    detect:
+      height: 360
+      width: 640
+      fps: 10
 #    zones:
 #      zone_0:
 #        coordinates: 0,360,640,360,383,267,364,122,0,133
