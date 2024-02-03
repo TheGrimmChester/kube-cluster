@@ -89,15 +89,15 @@ data:
   widgets.yaml: |
     - kubernetes:
         cluster:
-          cpu: true
-          label: cluster
-          memory: true
           show: true
-          showLabel: true
-        nodes:
           cpu: true
           memory: true
-          show: false
+          showLabel: true
+          label: "cluster"
+        nodes:
+          show: true
+          cpu: true
+          memory: true
           showLabel: true
     - search:
         provider: [google]
