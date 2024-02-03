@@ -8,13 +8,12 @@ metadata:
 data:
   bookmarks.yaml: |
     - Media:
+        - Plex:
+            - icon: plex.png
+              href: https://app.plex.tv/desktop/#!/
         - YouTube:
             - icon: youtube.png
               href: https://youtube.com/feed/subscriptions
-    - Reading:
-        - Reddit:
-            - icon: reddit.png
-              href: https://reddit.com
     - Git:
         - kubesearch:
             - icon: kubernetes-dashboard.png
