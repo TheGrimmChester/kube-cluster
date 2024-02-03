@@ -74,6 +74,11 @@ spec:
           nginx.ingress.kubernetes.io/auth-response-headers: Remote-User,Remote-Name,Remote-Groups,Remote-Email
           nginx.ingress.kubernetes.io/auth-snippet: |
             proxy_set_header X-Forwarded-Method $request_method;
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: "Monitoring"
+          gethomepage.dev/description: ""
+          gethomepage.dev/group: Média
+          gethomepage.dev/icon: "tesla.png"
         ingressClassName: "external"
         hosts:
           - host: "teslamate.${SECRET_DOMAIN}"

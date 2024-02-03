@@ -64,7 +64,11 @@ spec:
 
           hajimari.io/appName: 'Vault'
           hajimari.io/icon: simple-icons:bitwarden
-
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: "Vaultwarden"
+          gethomepage.dev/description: "Gestionnaire de mots de passe"
+          gethomepage.dev/group: Média
+          gethomepage.dev/icon: "vaultwarden.png"
         hosts:
           - host: vault.${SECRET_DOMAIN}
             paths:
