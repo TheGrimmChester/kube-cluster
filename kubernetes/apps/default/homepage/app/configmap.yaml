@@ -71,10 +71,10 @@ data:
     color: slate
     headerStyle: clean
     layout:
-      - Application-Service:
+      - 'Application Service':
       - Monitoring:
       - Média:
-      - Home-Automation:
+      - 'Home Automation':
       - Stockage:
           style: row
           columns: 3
