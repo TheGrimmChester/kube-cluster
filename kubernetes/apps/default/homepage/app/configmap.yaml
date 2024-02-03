@@ -26,6 +26,9 @@ data:
         - flux-cluster-template:
             - icon: github.png
               href: https://github.com/onedr0p/flux-cluster-template
+        - cluster-code:
+            - icon: kubernetes.png
+              href: https://github.com/TheGrimmChester/kube-cluster
   docker.yaml: ""
   kubernetes.yaml: |
     mode: cluster
