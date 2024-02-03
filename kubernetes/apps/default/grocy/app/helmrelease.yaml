@@ -49,6 +49,11 @@ spec:
           external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
           hajimari.io/enable: "true"
           hajimari.io/icon: grocy
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: "Grocy"
+          gethomepage.dev/description: ""
+          gethomepage.dev/group: "default"
+          gethomepage.dev/icon: "grocy.png"
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
             paths:
