@@ -60,10 +60,6 @@ data:
               url: {{HOMEPAGE_VAR_PROXMOX_URL}}
               username: {{HOMEPAGE_VAR_PROXMOX_TOKEN_ID}}
               password: {{HOMEPAGE_VAR_PROXMOX_TOKEN_SECRET}}
-        - Minio:
-            href: https://minio.{{HOMEPAGE_VAR_SECRET_DOMAIN}}
-            icon: minio.svg
-            description: S3
 
   settings.yaml: |
     title: Dashboard
