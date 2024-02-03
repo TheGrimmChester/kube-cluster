@@ -56,6 +56,15 @@ data:
               url: {{HOMEPAGE_VAR_PROXMOX_URL}}
               username: {{HOMEPAGE_VAR_PROXMOX_TOKEN_ID}}
               password: {{HOMEPAGE_VAR_PROXMOX_TOKEN_SECRET}}
+        - JDownloader:
+            href: https://jd2.{{HOMEPAGE_VAR_SECRET_DOMAIN}}
+            icon: jdownloader.png
+            description: Gestionnaire de téléchargements
+            widget:
+              type: jdownloader
+              username: {{HOMEPAGE_VAR_JDOWNLOADER_USERNAME}}
+              password: {{HOMEPAGE_VAR_JDOWNLOADER_PASSWORD}}
+              client: Kube
 
   settings.yaml: |
     title: Dashboard
