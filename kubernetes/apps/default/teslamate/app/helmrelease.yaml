@@ -78,7 +78,7 @@ spec:
           gethomepage.dev/name: "Monitoring"
           gethomepage.dev/description: ""
           gethomepage.dev/group: Média
-          gethomepage.dev/icon: "tesla.png"
+          gethomepage.dev/icon: "teslamate.png"
         ingressClassName: "external"
         hosts:
           - host: "teslamate.${SECRET_DOMAIN}"
