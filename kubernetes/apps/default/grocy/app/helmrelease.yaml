@@ -52,7 +52,7 @@ spec:
           gethomepage.dev/enabled: "true"
           gethomepage.dev/name: "Grocy"
           gethomepage.dev/description: ""
-          gethomepage.dev/group: "default"
+          gethomepage.dev/group: Application Service
           gethomepage.dev/icon: "grocy.png"
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"

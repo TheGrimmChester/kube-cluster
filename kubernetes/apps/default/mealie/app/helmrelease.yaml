@@ -108,6 +108,12 @@ spec:
 
         #          nginx.ingress.kubernetes.io/auth-url: "https://auth.eviljungle.com/oauth2/auth"
         #          nginx.ingress.kubernetes.io/auth-signin: https://auth.eviljungle.com/oauth2/start
+
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: "Mealie"
+          gethomepage.dev/description: "Recettes de cuisine"
+          gethomepage.dev/group: Application Service
+          gethomepage.dev/icon: "mealie.png"
         ingressClassName: "external"
         hosts:
           - host: "recipes.${SECRET_DOMAIN}"
