@@ -149,6 +149,12 @@ cameras:
       height: 360
       width: 640
       fps: 10
+      stationary:
+        interval: 50
+        threshold: 50
+    object:
+      track:
+        - person
 #    zones:
 #      zone_0:
 #        coordinates: 0,360,640,360,383,267,364,122,0,133
