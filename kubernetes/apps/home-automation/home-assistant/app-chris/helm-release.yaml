@@ -76,7 +76,7 @@ spec:
           gethomepage.dev/name: "Home Assistant Chris"
           gethomepage.dev/description: ""
           gethomepage.dev/group: Home Automation
-          gethomepage.dev/icon: "homeassistant.png"
+          gethomepage.dev/icon: "home-assistant.png"
         hosts:
           - host: &host "hass-c.${SECRET_DOMAIN}"
             paths:
