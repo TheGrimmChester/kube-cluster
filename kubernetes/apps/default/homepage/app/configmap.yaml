@@ -78,6 +78,8 @@ data:
       - Monitoring:
       - Média:
       - 'Home Automation':
+          style: column
+          columns: 1
       - Stockage:
           style: row
           columns: 3
