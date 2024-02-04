@@ -73,6 +73,8 @@ data:
     headerStyle: clean
     layout:
       - 'Application Service':
+          style: column
+          columns: 1
       - Monitoring:
       - Média:
       - 'Home Automation':
