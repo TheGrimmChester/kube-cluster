@@ -1,0 +1,14 @@
+version: '3'
+services:
+  ecojoko:
+    build: .
+    ports:
+      - "3226:3226"
+    environment:
+      ECOJOKO_USERNAME: ""
+      ECOJOKO_PASSWORD: ""
+      ECOJOKO_GATEWAY: ""
+      ECOJOKO_DEVICE: ""
+      MQTT_HOST: ""
+      MQTT_USERNAME: ""
+      MQTT_PASSWORD: ""

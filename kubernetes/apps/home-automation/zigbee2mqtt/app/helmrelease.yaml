@@ -1,0 +1,203 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.devbu.io/helmrelease_v2beta1.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: zigbee2mqtt
+  namespace: home-automation
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: app-template
+      version: 1.5.1
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+
+  maxHistory: 3
+  install:
+    createNamespace: true
+    remediation:
+      retries: 30
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 30
+  uninstall:
+    keepHistory: false
+  values:
+    controller:
+      type: statefulset
+      annotations:
+        reloader.stakater.com/auto: "true"
+
+    image:
+      repository: ghcr.io/koenkk/zigbee2mqtt
+      tag: 1.35.2
+
+    securityContext:
+      # -- (bool) Privileged securityContext may be required if USB controller is accessed directly through the host machine
+      privileged: true
+
+    podSecurityContext:
+    # -- (bool) Privileged securityContext may be required if USB controller is accessed directly through the host machine
+      privileged: true
+      runAsUser: 0
+      runAsGroup: 0
+      fsGroup: 0
+      fsGroupChangePolicy: OnRootMismatch
+    envFrom:
+      - secretRef:
+          name: zigbee2mqtt-secret
+    env:
+      TZ: Europe/Paris
+      ZIGBEE2MQTT_DATA: /config
+      ZIGBEE2MQTT_CONFIG_ADVANCED_HOMEASSISTANT_DISCOVERY_TOPIC: homeassistant
+      ZIGBEE2MQTT_CONFIG_ADVANCED_HOMEASSISTANT_LEGACY_ENTITY_ATTRIBUTES: "false"
+      ZIGBEE2MQTT_CONFIG_ADVANCED_HOMEASSISTANT_LEGACY_TRIGGERS: "false"
+      ZIGBEE2MQTT_CONFIG_ADVANCED_HOMEASSISTANT_STATUS_TOPIC: homeassistant/status
+      ZIGBEE2MQTT_CONFIG_ADVANCED_LAST_SEEN: ISO_8601
+      ZIGBEE2MQTT_CONFIG_ADVANCED_LEGACY_API: "false"
+      ZIGBEE2MQTT_CONFIG_ADVANCED_LEGACY_AVAILABILITY_PAYLOAD: "false"
+      ZIGBEE2MQTT_CONFIG_ADVANCED_LOG_LEVEL: info # debug
+      ZIGBEE2MQTT_CONFIG_ADVANCED_LOG_OUTPUT: '["console"]'
+      ZIGBEE2MQTT_CONFIG_AVAILABILITY_ACTIVE_TIMEOUT: 60
+      ZIGBEE2MQTT_CONFIG_AVAILABILITY_PASSIVE_TIMEOUT: 2000
+      ZIGBEE2MQTT_CONFIG_DEVICE_OPTIONS_LEGACY: "false"
+      ZIGBEE2MQTT_CONFIG_DEVICE_OPTIONS_RETAIN: "true"
+      ZIGBEE2MQTT_CONFIG_EXPERIMENTAL_NEW_API: "true"
+      ZIGBEE2MQTT_CONFIG_FRONTEND_PORT: &port 80
+      ZIGBEE2MQTT_CONFIG_FRONTEND_URL: "https://zigbee2mqtt.${SECRET_DOMAIN}"
+      ZIGBEE2MQTT_CONFIG_HOMEASSISTANT: "true"
+      ZIGBEE2MQTT_CONFIG_MQTT_INCLUDE_DEVICE_INFORMATION: "true"
+      ZIGBEE2MQTT_CONFIG_MQTT_KEEPALIVE: 60
+      ZIGBEE2MQTT_CONFIG_MQTT_REJECT_UNAUTHORIZED: "true"
+      ZIGBEE2MQTT_CONFIG_MQTT_SERVER: "mqtt://mosquitto.default.svc.cluster.local"
+      ZIGBEE2MQTT_CONFIG_MQTT_VERSION: 5
+      ZIGBEE2MQTT_CONFIG_MQTT_CLIENT_ID: 'zigbee2mqtt'
+      ZIGBEE2MQTT_CONFIG_PERMIT_JOIN: "true"
+      ZIGBEE2MQTT_CONFIG_SERIAL_BAUDRATE: 115200
+      ZIGBEE2MQTT_CONFIG_SERIAL_DISABLE_LED: "false"
+      ZIGBEE2MQTT_CONFIG_SERIAL_PORT: "/dev/ttyUSB0"
+#      ZIGBEE2MQTT_CONFIG_SERIAL_ADAPTER: "deconz"
+
+    service:
+      main:
+        ports:
+          http:
+            port: *port
+          metrics:
+            enabled: true
+            port: 8080
+
+    serviceMonitor:
+      main:
+        enabled: true
+        endpoints:
+          - port: metrics
+            scheme: http
+            path: /metrics
+            interval: 1m
+            scrapeTimeout: 10s
+
+    ingress:
+      main:
+        enabled: true
+        annotations:
+          hajimari.io/icon: mdi:zigbee
+          external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
+          #          kubernetes.io/ingress.class: "nginx"
+          #          cert-manager.io/cluster-issuer: letsencrypt-staging
+          #          nginx.ingress.kubernetes.io/whitelist-source-range: |
+          #            10.0.0.0/8,172.16.0.0/12,192.168.0.0/16
+          nginx.ingress.kubernetes.io/auth-method: GET
+          nginx.ingress.kubernetes.io/auth-url: http://authelia.security.svc.cluster.local/api/verify
+          nginx.ingress.kubernetes.io/auth-signin: "https://auth.${SECRET_DOMAIN}?rm=$request_method"
+          nginx.ingress.kubernetes.io/auth-response-headers: Remote-User,Remote-Name,Remote-Groups,Remote-Email
+          nginx.ingress.kubernetes.io/auth-snippet: |
+            proxy_set_header X-Forwarded-Method $request_method;
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: "Zigbee2MQTT"
+          gethomepage.dev/description: ""
+          gethomepage.dev/group: Automatisation
+          gethomepage.dev/icon: "zigbee2mqtt.png"
+        ingressClassName: "external"
+        hosts:
+          - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - *host
+
+    volumeClaimTemplates:
+      - name: config
+        mountPath: /config
+        accessMode: ReadWriteOnce
+        size: 1Gi
+        storageClass: ceph-block
+
+    persistence:
+      #      config:
+      #        name: config-plex-0
+      #        enabled: true
+      #        mountPath: /config
+      #        size: 250Gi
+      #        storageClass: ceph-block
+      #        accessMode: ReadWriteOnce
+      zigbee2mqtt-udev:
+        enabled: true
+        type: hostPath
+        hostPath: /run/udev
+        mountPath: /run/udev
+      ttyacm:
+        enabled: true
+        type: hostPath
+        hostPath: "/dev/ttyUSB0"
+#        hostPath: "/dev/serial/by-id/usb-dresden_elektronik_ingenieurtechnik_GmbH_ConBee_II_DE2410736-if00"
+        mountPath: "/dev/ttyUSB0"
+#
+#    volumes:
+#      - name: conbee
+#        hostPath:
+#          path: /dev/serial/by-id/usb-dresden_elektronik_ingenieurtechnik_GmbH_ConBee_II_DE2410736-if00
+
+    resources:
+      requests:
+        cpu: 10m
+        memory: 100Mi
+      limits:
+        memory: 500Mi
+    sidecars:
+      exporter:
+        image: ghcr.io/kpetremann/mqtt-exporter:1.4.1
+        imagePullPolicy: IfNotPresent
+        env:
+          - { name: LOG_LEVEL, value: DEBUG }
+          - { name: LOG_MQTT_MESSAGE, value: "True" }
+          - { name: MQTT_ADDRESS, value: "mosquitto.default.svc.cluster.local" }
+          - { name: MQTT_TOPIC, value: "zigbee2mqtt/#" }
+          - { name: MQTT_V5_PROTOCOL, value: "True" }
+          - { name: MQTT_CLIENT_ID, value: "zigbee2mqtt_exporter" }
+          - { name: PROMETHEUS_PORT, value: "8080" }
+          - { name: PROMETHEUS_PREFIX, value: "zigbee2mqtt_" }
+          - { name: ZIGBEE2MQTT_AVAILABILITY, value: "True" }
+          - { name: TOPIC_LABEL, value: "sensor" }
+          - { name: MQTT_EXPOSE_CLIENT_ID, value: "False" }
+        envFrom:
+          - secretRef:
+              name: zigbee2mqtt-secret
+    nodeSelector:
+      kubernetes.io/hostname: "worker-1"
+#    affinity:
+#      podAffinity:
+#        requiredDuringSchedulingIgnoredDuringExecution:
+#          - labelSelector:
+#              matchExpressions:
+#                - key: app.kubernetes.io/name
+#                  operator: In
+#                  values: [ "node-3" ]
+#            topologyKey: kubernetes.io/hostname

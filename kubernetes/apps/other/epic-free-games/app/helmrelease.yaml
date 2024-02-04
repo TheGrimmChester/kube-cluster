@@ -1,0 +1,102 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: epic-free-games
+  namespace: other
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 1.5.1
+      interval: 30m
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+
+  values:
+    controller:
+      type: statefulset
+      annotations:
+        reloader.stakater.com/auto: "true"
+
+    image:
+      repository: ghcr.io/claabs/epicgames-freegames-node
+      tag: latest@sha256:96d2c37c09865425f90b9e5cc2c7e3d75369e38fa094ece73cc39c01f18a1264
+
+    env:
+      CRON_SCHEDULE: "15 17 * * *"
+      RUN_ON_STARTUP: "true"
+      BASE_URL: "https://epic.${SECRET_DOMAIN}"
+      TZ: Europe/Paris
+
+    envFrom:
+      - secretRef:
+          name: epic-free-games-secret
+
+    service:
+      main:
+        ports:
+          http:
+            port: 3000
+
+    ingress:
+      main:
+        enabled: true
+        annotations:
+          external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
+          #          kubernetes.io/ingress.class: "nginx"
+          #          cert-manager.io/cluster-issuer: letsencrypt-staging
+          #          nginx.ingress.kubernetes.io/whitelist-source-range: |
+          #            10.0.0.0/8,172.16.0.0/12,192.168.0.0/16
+          nginx.ingress.kubernetes.io/auth-method: GET
+          nginx.ingress.kubernetes.io/auth-url: http://authelia.security.svc.cluster.local/api/verify
+          nginx.ingress.kubernetes.io/auth-signin: "https://auth.${SECRET_DOMAIN}?rm=$request_method"
+          nginx.ingress.kubernetes.io/auth-response-headers: Remote-User,Remote-Name,Remote-Groups,Remote-Email
+          nginx.ingress.kubernetes.io/auth-snippet: |
+            proxy_set_header X-Forwarded-Method $request_method;
+        ingressClassName: "external"
+        hosts:
+          - host: &host "epic.${SECRET_DOMAIN}"
+            paths:
+              - path: /
+        tls:
+          - hosts:
+              - *host
+
+    podAnnotations:
+      kyverno-no-tz: "true"
+
+    probes:
+      startup:
+        enabled: false
+      readiness:
+        enabled: false
+      liveness:
+        enabled: false
+
+    resources:
+      requests:
+        cpu: 20m
+        memory: 256M
+      limits:
+        memory: 1024M
+
+    volumeClaimTemplates:
+      - name: config
+        mountPath: /usr/app/config
+        accessMode: ReadWriteOnce
+        size: 10Mi
+        storageClass: ceph-block
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: kubernetes.io/hostname
+                  operator: In
+                  values:
+                    - node-3
+                    - worker-1

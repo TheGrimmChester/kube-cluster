@@ -1,0 +1,60 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nas
+spec:
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: 8099
+  clusterIP: None
+  type: ClusterIP
+  ipFamilyPolicy: SingleStack
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: nas
+subsets:
+  - addresses:
+      - ip: 192.168.1.101
+    ports:
+      - name: http
+        port: 8099
+        protocol: TCP
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nas
+  annotations:
+    hajimari.io/appName: 'NAS'
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+    external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
+    kubernetes.io/ingress.class: external
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/name: "NAS"
+    gethomepage.dev/description: "Big Data Storage"
+    gethomepage.dev/group: Stockage
+    gethomepage.dev/icon: "https://nas.${SECRET_DOMAIN}/ui/assets/favicons/safari-pinned-tab.svg"
+    gethomepage.dev/ping: "nas.${SECRET_DOMAIN}"
+spec:
+  ingressClassName: external
+  rules:
+    - host: &host "nas.${SECRET_DOMAIN}"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: nas
+                port:
+                  number: 80
+  tls:
+    - hosts:
+        - *host
