@@ -1,0 +1,26 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ./namespace.yaml
+  - ./hajimari/ks.yaml
+  - ./minio/ks.yaml
+  - ./emqx/ks.yaml
+  - ./grocy/ks.yaml
+  - ./teslamate/ks.yaml
+  - ./abrp/ks.yaml
+  - ./theme-park/ks.yaml
+  - ./frigate/ks.yaml
+  - ./registry/ks.yaml
+  - ./registry-ui/ks.yaml
+  - ./vaultwarden/ks.yaml
+  - ./mealie/ks.yaml
+  - ./mosquitto/ks.yaml
+#  - ./changedetection/ks.yaml
+#  - ./photoprism/ks.yaml
+  - ./kubernetes-schemas/ks.yaml
+  - ./paperless/ks.yaml
+#  - ./tesla-dashcam/ks.yaml
+  - ./joplin/ks.yaml
+#  - ./nextcloud/ks.yaml
+  - ./homepage/ks.yaml

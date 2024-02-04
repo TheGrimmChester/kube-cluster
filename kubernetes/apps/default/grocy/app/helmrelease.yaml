@@ -1,0 +1,118 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.trux.dev/helmrelease_v2beta1.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: &app grocy
+  namespace: default
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: app-template
+      version: 1.5.1
+      interval: 15m
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  install:
+    createNamespace: true
+    remediation:
+      retries: 30
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 30
+  uninstall:
+    keepHistory: false
+  values:
+    image:
+      repository: lscr.io/linuxserver/grocy
+      tag: 4.0.3
+    env:
+      TZ: Europe/Paris
+    #      PUID: 568
+    #      PGID: 568
+
+    service:
+      main:
+        ports:
+          http:
+            port: 80
+
+    ingress:
+      main:
+        enabled: true
+        ingressClassName: "external"
+        annotations:
+          external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
+          hajimari.io/enable: "true"
+          hajimari.io/icon: grocy
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: "Grocy"
+          gethomepage.dev/description: "Inventaire stock alimentaire"
+          gethomepage.dev/group: Application Service
+          gethomepage.dev/icon: "grocy.png"
+        hosts:
+          - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
+            paths:
+              - path: /
+        tls:
+          - hosts:
+              - *host
+
+    resources:
+      requests:
+        cpu: 80m
+        memory: 512M
+      limits:
+        cpu: 220m
+        memory: 1024M
+
+    podSecurityContext:
+      runAsUser: 0
+      runAsGroup: 0
+      fsGroup: 0
+      fsGroupChangePolicy: OnRootMismatch
+
+    probes:
+      liveness:
+        enabled: false
+      readiness:
+        enabled: false
+      startup:
+        enabled: false
+
+    securityContext:
+      container:
+        readOnlyRootFilesystem: false
+        runAsNonRoot: false
+        runAsUser: 0
+        runAsGroup: 0
+        fsGroup: 0
+        fsGroupChangePolicy: OnRootMismatch
+
+    persistence:
+      config:
+        enabled: true
+        mountPath: /config
+        size: 1Gi
+        storageClass: ceph-block
+        accessMode: ReadWriteOnce
+
+    controller:
+      type: statefulset
+      annotations:
+        reloader.stakater.com/auto: "true"
+
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: kubernetes.io/hostname
+                  operator: In
+                  values:
+                    - node-3
+                    - worker-1

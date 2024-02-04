@@ -1,0 +1,112 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: homepage-config
+  labels:
+    app.kubernetes.io/name: homepage
+data:
+  bookmarks.yaml: |
+    - Media:
+        - Plex:
+            - icon: plex.png
+              href: https://app.plex.tv/desktop/#!/
+        - YouTube:
+            - icon: youtube.png
+              href: https://youtube.com/feed/subscriptions
+    - Git:
+        - kubesearch:
+            - icon: kubernetes-dashboard.png
+              href: https://kubesearch.dev
+        - flux-cluster-template:
+            - icon: github.png
+              href: https://github.com/onedr0p/flux-cluster-template
+        - cluster-code:
+            - icon: kubernetes.png
+              href: https://github.com/TheGrimmChester/kube-cluster
+  docker.yaml: ""
+  kubernetes.yaml: |
+    mode: cluster
+  services.yaml: |
+    - Infrastructure:
+        - Cloudflared:
+            href: https://dash.cloudflare.com
+            icon: cloudflare-zero-trust.png
+            description: Cloudflared Tunnel
+            widget:
+              type: cloudflared
+              accountid: {{HOMEPAGE_VAR_CLOUDFLARED_ACCOUNTID}}
+              tunnelid: {{HOMEPAGE_VAR_CLOUDFLARED_TUNNELID}}
+              key: {{HOMEPAGE_VAR_CLOUDFLARED_API_TOKEN}}
+        - TrueNAS:
+            href: https://nas.{{HOMEPAGE_VAR_SECRET_DOMAIN}}
+            icon: truenas.png
+            description: NAS
+            widget:
+              type: truenas
+              url: https://nas.{{HOMEPAGE_VAR_SECRET_DOMAIN}}
+              key: {{HOMEPAGE_VAR_TRUENAS_TOKEN}}
+        - Proxmox:
+            href: {{HOMEPAGE_VAR_PROXMOX_URL}}
+            icon: proxmox.png
+            description: Hypervisor
+            widget:
+              type: proxmox
+              url: {{HOMEPAGE_VAR_PROXMOX_URL}}
+              username: {{HOMEPAGE_VAR_PROXMOX_TOKEN_ID}}
+              password: {{HOMEPAGE_VAR_PROXMOX_TOKEN_SECRET}}
+        - JDownloader:
+            href: https://jd2.{{HOMEPAGE_VAR_SECRET_DOMAIN}}
+            icon: jdownloader.png
+            description: Gestionnaire de téléchargements
+            widget:
+              type: jdownloader
+              username: {{HOMEPAGE_VAR_JDOWNLOADER_USERNAME}}
+              password: {{HOMEPAGE_VAR_JDOWNLOADER_PASSWORD}}
+              client: Kube
+
+  settings.yaml: |
+    title: Dashboard
+    language: fr
+    theme: dark
+    color: slate
+    headerStyle: clean
+    layout:
+      - 'Application Service':
+      - Monitoring:
+      - Média:
+      - 'Home Automation':
+      - Stockage:
+          style: row
+          columns: 3
+      - Infrastructure:
+
+  widgets.yaml: |
+    - kubernetes:
+        cluster:
+          show: true
+          cpu: true
+          memory: true
+          showLabel: true
+          label: "cluster"
+        nodes:
+          show: true
+          cpu: true
+          memory: true
+          showLabel: true
+    - search:
+        provider: google
+        focus: false
+        target: _blank
+    - datetime:
+        text_size: l
+        format:
+          dateStyle: long
+          timeStyle: short
+          hourCycle: h23
+    - openmeteo:
+        label: Maison
+        latitude: {{HOMEPAGE_VAR_LATITUDE}}
+        longitude: {{HOMEPAGE_VAR_LONGITUDE}}
+        units: metric
+        cache: 5

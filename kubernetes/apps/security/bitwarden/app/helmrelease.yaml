@@ -1,0 +1,85 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2beta1.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: &app bitwarden
+  namespace: security
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 2.0.3
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  maxHistory: 2
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    controllers:
+      main:
+        replicas: 1
+        strategy: Recreate
+        containers:
+          main:
+            image:
+              repository: "thegrimmchester/bw-cli"
+              tag: latest@sha256:74f951f4d62128dc07a3d20f9c78deed804f0e05d1deca37c02d2a6f50e68f0a
+              pullPolicy: IfNotPresent
+            env:
+              - name: BW_HOST
+                valueFrom:
+                  secretKeyRef:
+                    name: bitwarden-cli-secret
+                    key: BW_HOST
+              - name: BW_USER
+                valueFrom:
+                  secretKeyRef:
+                    name: bitwarden-cli-secret
+                    key: BW_USERNAME
+              - name: BW_PASSWORD
+                valueFrom:
+                  secretKeyRef:
+                    name: bitwarden-cli-secret
+                    key: BW_PASSWORD
+            ports:
+              - name: http
+                containerPort: 8087
+                protocol: TCP
+
+    service:
+      main:
+        ports:
+          http:
+            port: 8087
+
+    ingress:
+      main:
+        enabled: false
+---
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  namespace: bitwarden
+  name: external-secret-2-bw-cli
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/instance: bitwarden
+      app.kubernetes.io/name: bitwarden
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/instance: external-secrets
+              app.kubernetes.io/name: external-secrets

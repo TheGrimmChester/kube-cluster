@@ -1,0 +1,147 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: mealie
+  namespace: default
+spec:
+  interval: 5m
+  install:
+    createNamespace: true
+    remediation:
+      retries: 30
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 30
+  uninstall:
+    keepHistory: false
+  chart:
+    spec:
+      chart: app-template
+      version: 1.5.1
+      interval: 15m
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+
+  values:
+#    initContainers:
+#      init-db:
+#        image: ghcr.io/onedr0p/postgres-initdb:14.8
+#        envFrom:
+#          - secretRef:
+#              name: mealie-secret
+    image:
+      repository: docker.io/hkotel/mealie
+      tag: frontend-nightly
+
+    additionalContainers:
+      api:
+        name: mealie-api
+        image: docker.io/hkotel/mealie:api-nightly
+        imagePullPolicy: IfNotPresent
+        env:
+          - name: API_PORT
+            value: "9000"
+          - name: TZ
+            value: "Europe/Berlin"
+          - name: BASE_URL
+            value: "https://recipes.${SECRET_DOMAIN}"
+        ports:
+          - name: api
+            containerPort: 9000
+        volumeMounts:
+          - name: api-data
+            mountPath: /app/data/
+        envFrom:
+          - secretRef:
+              name: mealie-secret
+    env:
+      TZ: "Europe/Paris"
+      PUID: 568
+      PGID: 568
+      # Database Settings
+      DB_ENGINE: postgres
+      # Default Recipe Settings
+      RECIPE_PUBLIC: 'true'
+      RECIPE_SHOW_NUTRITION: 'true'
+      RECIPE_SHOW_ASSETS: 'true'
+      RECIPE_LANDSCAPE_VIEW: 'true'
+      RECIPE_DISABLE_COMMENTS: 'false'
+      RECIPE_DISABLE_AMOUNT: 'false'
+      BASE_URL: "https://recipes.${SECRET_DOMAIN}"
+
+    envFrom:
+      - secretRef:
+          name: mealie-secret
+
+    service:
+      main:
+        ports:
+          http:
+            port: 3001
+          api:
+            enabled: true
+            port: 9000
+
+    persistence:
+      api-data:
+        enabled: true
+        mountPath: /app/data/
+        size: 1Gi
+        storageClass: ceph-block
+        accessMode: ReadWriteOnce
+
+    ingress:
+      main:
+        enabled: true
+        annotations:
+          external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
+
+          #          kubernetes.io/ingress.class: "nginx"
+          #          cert-manager.io/cluster-issuer: letsencrypt-staging
+#          nginx.ingress.kubernetes.io/whitelist-source-range: |
+#            10.0.0.0/8,172.16.0.0/12,192.168.0.0/16
+          hajimari.io/icon: "recipe"
+
+        #          nginx.ingress.kubernetes.io/auth-url: "https://auth.eviljungle.com/oauth2/auth"
+        #          nginx.ingress.kubernetes.io/auth-signin: https://auth.eviljungle.com/oauth2/start
+
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: "Mealie"
+          gethomepage.dev/description: "Recettes de cuisine"
+          gethomepage.dev/group: Application Service
+          gethomepage.dev/icon: "mealie.png"
+        ingressClassName: "external"
+        hosts:
+          - host: "recipes.${SECRET_DOMAIN}"
+            paths:
+              - path: /
+        tls:
+          - hosts:
+              - "recipes.${SECRET_DOMAIN}"
+#            secretName: clouded-fr-production-tls
+    resources:
+      requests:
+        memory: 250Mi
+        cpu: 50m
+      limits:
+        memory: 500Mi
+
+    controller:
+      type: statefulset
+      annotations:
+        reloader.stakater.com/auto: "true"
+#
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: kubernetes.io/hostname
+                  operator: In
+                  values:
+                    - node-3
+                    - worker-1
