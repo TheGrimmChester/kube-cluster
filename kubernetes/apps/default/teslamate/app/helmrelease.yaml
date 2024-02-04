@@ -76,7 +76,7 @@ spec:
             proxy_set_header X-Forwarded-Method $request_method;
           gethomepage.dev/enabled: "true"
           gethomepage.dev/name: "Teslamate"
-          gethomepage.dev/description: ""
+          gethomepage.dev/description: "Suivi Tesla en temps réel"
           gethomepage.dev/group: Monitoring
           gethomepage.dev/icon: "teslamate.png"
         ingressClassName: "external"
