@@ -5,3 +5,5 @@ namespace: network
 resources:
   - nas.yaml
   - pve.yaml
+  - console-s3-alsa.yaml
+  - api-s3-alsa.yaml
