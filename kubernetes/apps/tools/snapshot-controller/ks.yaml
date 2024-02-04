@@ -1,0 +1,33 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/JJGadgets/flux2-schemas/main/kustomization-kustomize-v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: cluster-apps-snapshot-controller
+  namespace: flux-system
+spec:
+  path: ./kubernetes/apps/tools/snapshot-controller/base
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
+  interval: 30m
+  prune: true
+  wait: true
+
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/JJGadgets/flux2-schemas/main/kustomization-kustomize-v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: cluster-app-snapshot-controller-validation
+  namespace: flux-system
+spec:
+  path: ./kubernetes/apps/tools/snapshot-controller/validation
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
+  interval: 30m
+  prune: true
+  wait: true
+  dependsOn:
+    - name: cluster-apps-snapshot-controller

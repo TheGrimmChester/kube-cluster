@@ -1,0 +1,169 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.devbu.io/helmrelease_v2beta1.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: thanos
+  namespace: observability
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: thanos
+      version: 12.20.2
+      sourceRef:
+        kind: HelmRepository
+        name: bitnami
+        namespace: flux-system
+  maxHistory: 3
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: kubernetes.io/hostname
+                  operator: In
+                  values:
+                    - node-3
+                    - worker-1
+
+    image:
+      registry: quay.io
+      repository: thanos/thanos
+      tag: v0.34.0
+    objstoreConfig:
+      type: s3
+    query:
+      enabled: true
+      replicaCount: 1
+      podAntiAffinityPreset: hard
+      replicaLabels:
+        - replica
+      dnsDiscovery:
+        sidecarsService: kube-prometheus-stack-thanos-discovery
+        sidecarsNamespace: observability
+        stores:
+          - "dnssrv+_grpc._tcp.kube-prometheus-stack-thanos-discovery"
+          - "thanos-store.${SECRET_DOMAIN}:443"
+      ingress:
+        enabled: true
+        hostname: &host "thanos-query.${SECRET_DOMAIN}"
+        annotations:
+          hajimari.io/enable: "false"
+          external-dns.alpha.kubernetes.io/target: "internal.${SECRET_DOMAIN}"
+          nginx.ingress.kubernetes.io/whitelist-source-range: "10.0.0.0/8,172.16.0.0/12,192.168.0.0/16"
+
+        ingressClassName: "internal"
+        tls: true
+        extraTls:
+          - hosts:
+              - *host
+#      resources:
+#        requests:
+#          cpu: 15m
+#          memory: 64M
+#        limits:
+#          memory: 99M
+    queryFrontend:
+      enabled: true
+      replicaCount: 1
+    bucketweb:
+      enabled: true
+      refresh: "10m"
+      replicaCount: 1
+    compactor:
+      replicaCount: 1
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - node-3
+                      - worker-1
+
+      enabled: true
+      extraFlags:
+        - "--compact.concurrency"
+        - "4"
+      retentionResolutionRaw: 14d
+      retentionResolution5m: 14d
+      retentionResolution1h: 30d
+      ingress:
+        enabled: true
+        hostname: &host "thanos-compactor.${SECRET_DOMAIN}"
+        ingressClassName: "internal"
+        annotations:
+          hajimari.io/enable: "false"
+        tls: true
+        extraTls:
+          - hosts:
+              - *host
+      persistence:
+        enabled: true
+        storageClass: "ceph-block"
+        size: 15Gi
+    storegateway:
+      replicaCount: 1
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - node-3
+                      - worker-1
+
+      enabled: true
+#      resources:
+#        requests:
+#          cpu: 23m
+#          memory: 204M
+#        limits:
+#          memory: 226M
+      persistence:
+        enabled: true
+        storageClass: "ceph-block"
+        size: 512Mi
+    ruler:
+      enabled: false
+    metrics:
+      enabled: true
+      serviceMonitor:
+        enabled: true
+  valuesFrom:
+    - kind: Secret
+      name: thanos-secret
+      valuesKey: BUCKET_NAME
+      targetPath: objstoreConfig.config.bucket
+    - kind: Secret
+      name: thanos-secret
+      valuesKey: BUCKET_HOST
+      targetPath: objstoreConfig.config.endpoint
+    - kind: Secret
+      name: thanos-secret
+      valuesKey: BUCKET_REGION
+      targetPath: objstoreConfig.config.region
+    - kind: Secret
+      name: thanos-secret
+      valuesKey: AWS_ACCESS_KEY_ID
+      targetPath: objstoreConfig.config.access_key
+    - kind: Secret
+      name: thanos-secret
+      valuesKey: AWS_SECRET_ACCESS_KEY
+      targetPath: objstoreConfig.config.secret_key

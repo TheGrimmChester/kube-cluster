@@ -1,0 +1,103 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.trux.dev/helmrelease_v2beta1.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: &app myelectricaldata
+  namespace: observability
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: app-template
+      version: 1.5.1
+      interval: 15m
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  maxHistory: 3
+  install:
+    createNamespace: true
+    remediation:
+      retries: 30
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 30
+  uninstall:
+    keepHistory: false
+
+  values:
+    controller:
+      type: statefulset
+      annotations:
+        reloader.stakater.com/auto: "true"
+
+    maxHistory: 2
+    image:
+      repository: m4dm4rtig4n/myelectricaldata
+      tag: latest@sha256:4058662da03db956d07f8f9eeca9af476e716b7fba8a7ea04593210e6e0b6927
+    volumeMounts:
+      - name: data
+        mountPath: /data
+
+    env:
+      TZ: Europe/Paris
+    service:
+      main:
+        ports:
+          http:
+            port: 5000
+
+    ingress:
+      main:
+        enabled: true
+        annotations:
+          hajimari.io/enable: "true"
+          hajimari.io/appName: "myelectricaldata"
+          external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
+          nginx.ingress.kubernetes.io/auth-method: GET
+          nginx.ingress.kubernetes.io/auth-url: http://authelia.security.svc.cluster.local/api/verify
+          nginx.ingress.kubernetes.io/auth-signin: "https://auth.${SECRET_DOMAIN}?rm=$request_method"
+          nginx.ingress.kubernetes.io/auth-response-headers: Remote-User,Remote-Name,Remote-Groups,Remote-Email
+          nginx.ingress.kubernetes.io/auth-snippet: |
+            proxy_set_header X-Forwarded-Method $request_method;
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: "MyElectricalData"
+          gethomepage.dev/description: "Info consommation Enedis"
+          gethomepage.dev/group: Surveillance
+          gethomepage.dev/icon: "https://myelectricaldata.${SECRET_DOMAIN}/favicon.ico"
+
+        ingressClassName: "external"
+        hosts:
+          - host: &host "myelectricaldata.${SECRET_DOMAIN}"
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - *host
+    probes:
+      liveness:
+        enabled: false
+      readiness:
+        enabled: false
+      startup:
+        enabled: false
+
+#    volumeClaimTemplates:
+#      - name: data
+#        mountPath: /data
+#        accessMode: ReadWriteOnce
+#        size: 1Gi
+#        storageClass: ceph-block
+    persistence:
+      data:
+        enabled: true
+        storageClass: "ceph-block"
+        accessMode: ReadWriteOnce
+        size: 1Gi
+#
+#    nodeSelector:
+#      kubernetes.io/hostname: "node-3"

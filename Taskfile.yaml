@@ -1,0 +1,57 @@
+---
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: "3"
+
+vars:
+  BOOTSTRAP_DIR: "{{.ROOT_DIR}}/bootstrap"
+  ANSIBLE_DIR: "{{.ROOT_DIR}}/ansible"
+  KUBERNETES_DIR: "{{.ROOT_DIR}}/kubernetes"
+
+env:
+  KUBECONFIG: "{{.ROOT_DIR}}/kubeconfig"
+
+includes:
+  ansible: .taskfiles/AnsibleTasks.yaml
+  brew: .taskfiles/BrewTasks.yaml
+  kubernetes:
+    aliases: ["k8s"]
+    taskfile: .taskfiles/KubernetesTasks.yaml
+  flux: .taskfiles/FluxTasks.yaml
+  k0s: .taskfiles/K0sTasks.yaml
+  repo: .taskfiles/RepoTasks.yaml
+  sops: .taskfiles/SopsTasks.yaml
+  volsync: .taskfiles/VolSync/Tasks.yml
+  rook: .taskfiles/Rook/Tasks.yml
+  database: .taskfiles/Database/Tasks.yml
+
+tasks:
+
+  default: task -l
+
+  init:
+    desc: Initialize configuration files
+    cmds:
+      - cp -n {{.BOOTSTRAP_DIR}}/vars/addons.sample.yaml {{.BOOTSTRAP_DIR}}/vars/addons.yaml
+      - cp -n {{.BOOTSTRAP_DIR}}/vars/config.sample.yaml {{.BOOTSTRAP_DIR}}/vars/config.yaml
+      - cmd: echo "=== Configuration files copied ==="
+        silent: true
+      - cmd: echo "Proceed with updating the configuration files..."
+        silent: true
+      - cmd: echo "{{.BOOTSTRAP_DIR}}/vars/config.yaml"
+        silent: true
+      - cmd: echo "{{.BOOTSTRAP_DIR}}/vars/addons.yaml"
+        silent: true
+    status:
+      - test -f "{{.BOOTSTRAP_DIR}}/vars/addons.yaml"
+      - test -f "{{.BOOTSTRAP_DIR}}/vars/config.yaml"
+
+  # TODO: Only prompt when generated directories exist
+  # https://github.com/go-task/task/issues/1330
+  configure:
+    desc: Configure repository from Ansible vars
+    prompt: Any conflicting config in the root kubernetes and ansible directories will be overwritten... continue?
+    cmds:
+      - ./.venv/bin/ansible-playbook {{.BOOTSTRAP_DIR}}/configure.yaml
+      - ./scripts/kubeconform.sh {{.KUBERNETES_DIR}}
+    env:
+      ANSIBLE_DISPLAY_SKIPPED_HOSTS: "false"

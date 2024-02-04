@@ -1,0 +1,116 @@
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: postgres-backup
+  namespace: database
+spec:
+  schedule: "0 22 * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          automountServiceAccountToken: false
+          enableServiceLinks: false
+          securityContext:
+            runAsUser: 1031
+            runAsGroup: 1031
+            fsGroup: 1031
+            supplementalGroups:
+              - 65541
+
+          containers:
+            - name: postgres-backup
+              image: docker.io/prodrigestivill/postgres-backup-local:16@sha256:085926531fbabe298792a83384d07d6146683732e53e51891ac75eaa71e09d08
+              imagePullPolicy: IfNotPresent
+              command:
+                - "/backup.sh"
+              env:
+                - name: POSTGRES_HOST
+                  value: postgres-v15-rw.database.svc.cluster.local
+                - name: POSTGRES_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: cloudnative-pg-secret
+                      key: username
+                - name: POSTGRES_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: cloudnative-pg-secret
+                      key: password
+                - name: POSTGRES_DB
+                  value: "authelia,grafana,home_assistant,home_assistant-chris,teslamate,vaultwarden,myelectricaldata,paperless,joplin"
+              volumeMounts:
+                - name: nas-backups
+                  mountPath: /backups
+
+          restartPolicy: OnFailure
+
+          volumes:
+            - name: nas-backups
+              nfs:
+                server: "192.168.1.101"
+                path: /mnt/Backup/Postgres
+
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: postgres-backup-minio
+  namespace: database
+spec:
+  schedule: "0 22 * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          automountServiceAccountToken: false
+          enableServiceLinks: false
+          securityContext:
+            runAsUser: 473
+            runAsGroup: 3000
+            fsGroup: 3000
+            supplementalGroups:
+              - 65541
+
+          containers:
+            - name: postgres-backup
+              image: docker.io/prodrigestivill/postgres-backup-local:16@sha256:085926531fbabe298792a83384d07d6146683732e53e51891ac75eaa71e09d08
+              imagePullPolicy: IfNotPresent
+              command:
+                - "/backup.sh"
+              env:
+                - name: POSTGRES_HOST
+                  value: postgres-v15-rw.database.svc.cluster.local
+                - name: POSTGRES_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: cloudnative-pg-secret
+                      key: username
+                - name: POSTGRES_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: cloudnative-pg-secret
+                      key: password
+                - name: POSTGRES_DB
+                  value: "authelia,grafana,home_assistant,home_assistant-chris,teslamate,vaultwarden,myelectricaldata,paperless,joplin"
+              volumeMounts:
+                - name: nas-backups
+                  mountPath: /backups
+
+          restartPolicy: OnFailure
+
+          volumes:
+            - name: nas-backups
+              nfs:
+                server: "192.168.1.32"
+                path: /mnt/ssd_4to/minio/postgresql/dumps
+#            - name: nas-backups
+#              hostPath:
+#                path: /mnt/ssd_4to/minio/postgresql/dumps
+#                type: Directory
+
+          nodeSelector:
+            kubernetes.io/hostname: "worker-1"

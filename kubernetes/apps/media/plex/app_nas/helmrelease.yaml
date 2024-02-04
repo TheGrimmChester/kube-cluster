@@ -1,0 +1,166 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.devbu.io/helmrelease_v2beta1.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: plex
+  namespace: media
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: app-template
+      version: 1.5.1
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  maxHistory: 3
+  install:
+    createNamespace: true
+    remediation:
+      retries: 30
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 30
+  uninstall:
+    keepHistory: false
+  values:
+    controller:
+      type: statefulset
+      annotations:
+        reloader.stakater.com/auto: "true"
+
+    image:
+      repository: ghcr.io/onedr0p/plex
+      tag: 1.32.0.6918-6f393eda1@sha256:1a7ca3a38bbe42d846f0e3cd812fba4db6c1eafc63478bb809643d04a3501dc0
+    env:
+      TZ: Europe/Paris
+      ALLOWED_NETWORKS: 172.16.0.0/12,10.0.0.0/8,192.168.0.0/16
+      PLEX_PREFERENCE_1: "FriendlyName=Kube"
+      ADVERTISE_IP: "https://plex.${SECRET_DOMAIN}:32401/,https://plex.${SECRET_DOMAIN}:443/,http://192.168.1.204:32400/,http://plex.media.svc.cluster.local:32400"
+    envFrom:
+      - secretRef:
+          name: plex-secret
+
+    service:
+      main:
+        type: LoadBalancer
+        loadBalancerIP: "192.168.1.204"
+#        externalTrafficPolicy: Local
+        ports:
+          http:
+            port: 32400
+
+    ingress:
+      main:
+        enabled: true
+        ingressClassName: external
+        annotations:
+          external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
+          hajimari.io/icon: simple-icons:plex
+          hajimari.io/enable: "true"
+          hajimari.io/appName: plex
+          hajimari.io/url: "https://plex.${SECRET_DOMAIN}/web/"
+          nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+          nginx.ingress.kubernetes.io/configuration-snippet: |
+            proxy_set_header Accept-Encoding "";
+            sub_filter '</head>' '<link rel="stylesheet" type="text/css" href="https://theme-park.devbu.io/css/base/plex/nord.css"></head>';
+            sub_filter_once on;
+
+            location = / {
+              if ($http_x_plex_device = ""){
+                return 301 $scheme://$host/web/index.html;
+              }
+            }
+
+        hosts:
+          - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - *host
+            secretName: clouded-fr-production-tls
+    podSecurityContext:
+      runAsUser: 568
+      runAsGroup: 568
+      fsGroup: 568
+      fsGroupChangePolicy: OnRootMismatch
+      # # Hardware acceleration using an Intel iGPU w/ QuickSync
+      # # These IDs below should be matched to your `video` and `render` group on the host
+      # # To obtain those IDs run the following grep statement on the host:
+      # # $ cat /etc/group | grep "video\|render"
+      # # video:x:44:
+      # # render:x:109:
+      supplementalGroups: [44, 109, 10000]
+
+    persistence:
+      config:
+        enabled: true
+        type: nfs
+        server: "192.168.1.101"
+        path: /mnt/Apps/kube/volumes/plex
+        mountPath: /config
+        readOnly: false
+#      media:
+#        enabled: true
+#        type: nfs
+#        server: "192.168.1.101"
+#        path: /mnt/Entertainments
+#        mountPath: /media/Entertainments
+#        readOnly: false
+#      media-external:
+#        enabled: true
+#        type: nfs
+#        server: "192.168.1.101"
+#        path: /mnt/ntfs/Entertainment
+#        mountPath: /media/external/Entertainments
+#        readOnly: false
+#      media:
+#        enabled: true
+#        type: hostPath
+#        hostPath: "/mnt/Entertainments"
+#        mountPath: "/media/Entertainments"
+#      media-external:
+#        enabled: true
+#        type: hostPath
+#        hostPath: "/mnt/ntfs/Entertainment"
+#        mountPath: "/media/external/Entertainments"
+      media:
+        enabled: true
+        type: nfs
+        server: "192.168.1.101"
+        path: /mnt/Entertainments
+        mountPath: /media/Entertainments
+        readOnly: false
+      media-external:
+        enabled: true
+        type: nfs
+        server: "192.168.1.101"
+        path: /mnt/ntfs/Entertainment
+        mountPath: /media/external/Entertainments
+        readOnly: false
+
+      transcode:
+        enabled: true
+        type: emptyDir
+        accessMode: ReadWriteOnce
+        emptyDir:
+          enabled: true
+          medium: "Memory"
+          sizeLimit: 1Gi
+
+    nodeSelector:
+      intel.feature.node.kubernetes.io/gpu: "true"
+      kubernetes.io/hostname: "node-3"
+    resources:
+      requests:
+        gpu.intel.com/i915: 1
+#        cpu: 100m
+#        memory: 1000Mi
+      limits:
+        gpu.intel.com/i915: 1
+#        memory: 4000Mi
