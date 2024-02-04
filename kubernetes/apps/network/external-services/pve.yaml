@@ -60,6 +60,7 @@ metadata:
     gethomepage.dev/description: "Virtual Environments"
     gethomepage.dev/group: Stockage
     gethomepage.dev/icon: "proxmox.png"
+    gethomepage.dev/siteMonitor: "pve.${SECRET_DOMAIN}"
 spec:
   ingressClassName: external
   rules:
