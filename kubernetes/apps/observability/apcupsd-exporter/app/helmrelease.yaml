@@ -34,7 +34,7 @@ spec:
       strategy: RollingUpdate
     image:
       repository: iodeveloper/prom-apcupsd-exporter
-      tag: latest@sha256:e7cd07f560691a66316b13fcbbb89b4e311e0dfacbd8472e870aeff9d6a71382
+      tag: latest@sha256:829ad7c4f4aea4a38216bd0b1af845f04374cd7c2dcc0c83d1c4a4c7f014ea13
     command: ["/prom-apcupsd-exporter", "--apcupsd", "apcupsd.observability.svc.cluster.local:3551", "--collectInterval", "1"]
     env:
       TZ: Europe/Paris
