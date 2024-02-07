@@ -17,6 +17,9 @@ data:
         - cluster-code:
             - icon: kubernetes.png
               href: https://github.com/TheGrimmChester/kube-cluster
+        - solar-router:
+            - icon: mdi:solar-power
+              href: https://f1atb.fr/fr/routeur-photovoltaique-simple-a-realiser/
   docker.yaml: ""
   kubernetes.yaml: |
     mode: cluster
