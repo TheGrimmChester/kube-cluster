@@ -35,7 +35,7 @@ spec:
 
     image:
       repository: ghcr.io/koenkk/zigbee2mqtt
-      tag: 1.35.2
+      tag: 1.35.3
 
     securityContext:
       # -- (bool) Privileged securityContext may be required if USB controller is accessed directly through the host machine
