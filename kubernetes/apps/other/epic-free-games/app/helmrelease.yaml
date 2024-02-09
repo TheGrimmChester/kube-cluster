@@ -24,7 +24,7 @@ spec:
 
     image:
       repository: ghcr.io/claabs/epicgames-freegames-node
-      tag: latest@sha256:1fc2d7891229a37616c4456b5a4c13764d281ded551d891634ae0686c338e15d
+      tag: latest@sha256:4414d103b247df4e09391bf8a06671b1e6ee4a211014d9cb98f75913be264f25
 
     env:
       CRON_SCHEDULE: "15 17 * * *"
