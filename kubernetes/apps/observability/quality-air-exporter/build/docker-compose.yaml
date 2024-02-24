@@ -1,0 +1,10 @@
+version: '3'
+services:
+  quality-air:
+    build: .
+    environment:
+      MQTT_HOST: ""
+      MQTT_USERNAME: ""
+      MQTT_PASSWORD: ""
+      MAC_ADDRESS: ""
+      UUID: ""
