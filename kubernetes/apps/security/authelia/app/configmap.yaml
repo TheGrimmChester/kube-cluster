@@ -82,6 +82,7 @@ data:
             - "paperless.${SECRET_DOMAIN}"
             - "hass-code.${SECRET_DOMAIN}"
             - "solar-router.${SECRET_DOMAIN}"
+            - "dtu.${SECRET_DOMAIN}"
 
           # Applications without auth but low security requirements
         - policy: one_factor
