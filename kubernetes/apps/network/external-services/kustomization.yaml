@@ -9,3 +9,4 @@ resources:
   - api-s3-alsa.yaml
   - plex.yaml
   - solar-router.yaml
+  - dtu.yaml
