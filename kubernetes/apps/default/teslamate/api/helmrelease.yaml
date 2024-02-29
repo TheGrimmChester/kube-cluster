@@ -50,7 +50,7 @@ spec:
         type: ClusterIP
         ports:
           http:
-            port: 4000
+            port: 8080
     ingress:
       main:
         enabled: true
