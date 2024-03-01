@@ -75,6 +75,7 @@ data:
         - policy: two_factor
           domain:
             - "teslamate-solar.${SECRET_DOMAIN}"
+            - "teslamate-solar-f.${SECRET_DOMAIN}"
             - "teslamate-grafana.${SECRET_DOMAIN}"
             - "teslamate.${SECRET_DOMAIN}"
             - "frigate.${SECRET_DOMAIN}"

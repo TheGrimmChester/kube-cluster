@@ -11,7 +11,7 @@ description: "This priority class should be used for XYZ service pods only."
 apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
-  name: teslamate-solar
+  name: teslamate-solar-f
   namespace: default
 spec:
   interval: 15m
@@ -68,18 +68,18 @@ spec:
           nginx.ingress.kubernetes.io/auth-snippet: |
             proxy_set_header X-Forwarded-Method $request_method;
           gethomepage.dev/enabled: "true"
-          gethomepage.dev/name: "Tesla Solar"
+          gethomepage.dev/name: "Tesla Solar F"
           gethomepage.dev/description: "Gestion recharge solaire Tesla"
           gethomepage.dev/group: Surveillance
           gethomepage.dev/icon: "teslamate.png"
         ingressClassName: "external"
         hosts:
-          - host: "teslamate-solar.${SECRET_DOMAIN}"
+          - host: "teslamate-solar-f.${SECRET_DOMAIN}"
             paths:
               - path: /
         tls:
           - hosts:
-              - "teslamate-solar.${SECRET_DOMAIN}"
+              - "teslamate-solar-f.${SECRET_DOMAIN}"
 #    tolerations:
 #      - key: "arm"
 #        operator: "Exists"
