@@ -83,6 +83,7 @@ data:
             - "myelectricaldata.${SECRET_DOMAIN}"
             - "paperless.${SECRET_DOMAIN}"
             - "hass-code.${SECRET_DOMAIN}"
+            - "hass-code-c.${SECRET_DOMAIN}"
             - "solar-router.${SECRET_DOMAIN}"
             - "dtu.${SECRET_DOMAIN}"
 
