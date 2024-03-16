@@ -13,7 +13,7 @@ resources:
   - ./apcupsd/ks.yaml
   - ./apcupsd-exporter/ks.yaml
   - ./ecojoko-exporter/ks.yaml
-  - ./quality-air-exporter/ks.yaml
+#  - ./quality-air-exporter/ks.yaml
   - ./myelectricaldata/ks.yaml
   - ./influxdb/ks.yaml
   - ./kubernetes-dashboard/ks.yaml
