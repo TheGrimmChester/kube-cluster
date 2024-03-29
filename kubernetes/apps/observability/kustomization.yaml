@@ -17,4 +17,4 @@ resources:
   - ./myelectricaldata/ks.yaml
   - ./influxdb/ks.yaml
   - ./kubernetes-dashboard/ks.yaml
-  - ./solectrus/ks.yaml
+#  - ./solectrus/ks.yaml
