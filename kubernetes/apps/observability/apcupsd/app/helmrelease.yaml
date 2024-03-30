@@ -43,6 +43,7 @@ spec:
       NETSERVER: on
       NISIP: 0.0.0.0
       DEVICE: /dev/usb/hiddev0
+      POLLTIME: 10
     securityContext:
       # -- (bool) Privileged securityContext may be required if USB controller is accessed directly through the host machine
       privileged: true
