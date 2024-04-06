@@ -1,19 +1,8 @@
 ---
 kubernetes:
   children:
-    master:
+    controllers:
       hosts:
-        vm-3:
-          ansible_user: root
-          ansible_host: 192.168.1.173
-    worker:
-      hosts:
-        truenas2012:
-          ansible_user: root
-          ansible_host: 192.168.1.49
-        node-3:
-          ansible_user: root
-          ansible_host: 192.168.1.138
-        worker-1:
-          ansible_user: root
-          ansible_host: 192.168.1.32
+        "vim4":
+          ansible_user: "root"
+          ansible_host: "192.168.1.83"
