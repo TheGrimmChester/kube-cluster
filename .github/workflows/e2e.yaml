@@ -24,7 +24,7 @@ jobs:
           python-version: "3.12"
 
       - name: Cache venv
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('requirements.txt', 'requirements.yaml') }}
           path: .venv
