@@ -11,11 +11,12 @@ resources:
   - ./grafana.yaml
   - ./hajimari.yaml
   - ./ingress-nginx.yaml
-  - ./jetstack.yaml
   - ./k8s-gateway.yaml
+  - ./jetstack.yaml
   - ./kubernetes-dashboard.yaml
   - ./metrics-server.yaml
   - ./prometheus-community.yaml
+  - ./openebs.yaml
   - ./stakater.yaml
   - ./weave-gitops.yaml
   - ./piraeus.yaml
