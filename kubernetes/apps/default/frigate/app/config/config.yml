@@ -1,5 +1,15 @@
 logger:
   default: info
+ui:
+  # Optional: Set the default live mode for cameras in the UI (default: shown below)
+  live_mode: jsmpeg
+  # Optional: Set a timezone to use in the UI (default: use browser local time)
+  timezone: Europe/Paris
+  # Optional: Use an experimental recordings / camera view UI (default: shown below)
+  use_experimental: True
+  # Optional: Set the time format used.
+  # Options are browser, 12hour, or 24hour (default: shown below)
+  time_format: 24hour
 
 mqtt:
   host: "mosquitto.default.svc.cluster.local"
