@@ -117,7 +117,6 @@ cameras:
             - detect
         - path: rtsp://localhost:8554/frigate_front_hq
           roles:
-            - record
             - audio
             - record
             - rtmp
@@ -160,7 +159,6 @@ cameras:
             - detect
         - path: rtsp://localhost:8554/frigate_back_hq
           roles:
-            - record
             - audio
             - record
             - rtmp
