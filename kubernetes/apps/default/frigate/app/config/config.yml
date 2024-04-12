@@ -38,6 +38,7 @@ ffmpeg:
   hwaccel_args: ["-hwaccel", "vaapi", "-hwaccel_device", "/dev/dri/renderD128", "-hwaccel_output_format", "yuv420p"]
   output_args:
     record: preset-record-generic-audio-aac
+  input_args: preset-rtsp-generic
 
 snapshots:
   enabled: true
@@ -103,10 +104,15 @@ cameras:
       inputs:
         - path: rtsp://localhost:8554/frigate_front_lq
           roles:
+            - audio
             - detect
+            - rtmp
         - path: rtsp://localhost:8554/frigate_front_hq
           roles:
             - record
+            - audio
+            - record
+            - rtmp
     detect:
       height: 360
       width: 640
@@ -143,10 +149,15 @@ cameras:
       inputs:
         - path: rtsp://localhost:8554/frigate_back_lq
           roles:
+            - audio
             - detect
+            - rtmp
         - path: rtsp://localhost:8554/frigate_back_hq
           roles:
             - record
+            - audio
+            - record
+            - rtmp
     detect:
       height: 360
       width: 640
