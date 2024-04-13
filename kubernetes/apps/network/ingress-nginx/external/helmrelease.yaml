@@ -2,8 +2,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
-  name: ingress-nginx-internal
-  namespace: network
+  name: ingress-nginx-external
 spec:
   interval: 30m
   chart:
@@ -21,24 +20,28 @@ spec:
     cleanupOnFail: true
     remediation:
       retries: 3
+  dependsOn:
+    - name: cloudflared
+      namespace: network
   values:
-    fullnameOverride: ingress-nginx-internal
+    fullnameOverride: ingress-nginx-external
     controller:
       replicaCount: 1
       service:
         annotations:
-          io.cilium/lb-ipam-ips: "#{ bootstrap_cloudflare.ingress_vip }#"
+          external-dns.alpha.kubernetes.io/hostname: "external.${SECRET_DOMAIN}"
+          io.cilium/lb-ipam-ips: "192.168.1.193"
         externalTrafficPolicy: Cluster
       ingressClassResource:
-        name: internal
-        default: true
-        controllerValue: k8s.io/internal
+        name: external
+        default: false
+        controllerValue: k8s.io/external
       admissionWebhooks:
         objectSelector:
           matchExpressions:
             - key: ingress-class
               operator: In
-              values: ["internal"]
+              values: ["external"]
       config:
         client-body-buffer-size: 100M
         client-body-timeout: 120
@@ -65,11 +68,7 @@ spec:
           namespaceSelector:
             any: true
       extraArgs:
-        #% if bootstrap_cloudflare.acme.production %#
         default-ssl-certificate: "network/${SECRET_DOMAIN/./-}-production-tls"
-        #% else %#
-        default-ssl-certificate: "network/${SECRET_DOMAIN/./-}-staging-tls"
-        #% endif %#
       topologySpreadConstraints:
         - maxSkew: 1
           topologyKey: kubernetes.io/hostname
@@ -77,7 +76,7 @@ spec:
           labelSelector:
             matchLabels:
               app.kubernetes.io/name: ingress-nginx
-              app.kubernetes.io/instance: ingress-nginx-internal
+              app.kubernetes.io/instance: ingress-nginx-external
               app.kubernetes.io/component: controller
       resources:
         requests:
