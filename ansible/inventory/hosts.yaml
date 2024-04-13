@@ -3,6 +3,12 @@ kubernetes:
   children:
     controllers:
       hosts:
-        "vim4":
+        "vm-3":
           ansible_user: "root"
-          ansible_host: "192.168.1.83"
+          ansible_host: "192.168.1.173"
+        "node-3":
+          ansible_user: "root"
+          ansible_host: "192.168.1.138"
+        "worker-1":
+          ansible_user: "root"
+          ansible_host: "192.168.1.32"

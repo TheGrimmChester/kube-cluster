@@ -62,8 +62,8 @@
             dest: /etc/resolv.conf
             content: |
               search .
-              nameserver 9.9.9.9
               nameserver 1.1.1.1
+              nameserver 1.0.0.1
 
     - name: System Configuration
       notify: Reboot
@@ -104,6 +104,8 @@
               fs.inotify.max_queued_events: 65536
               fs.inotify.max_user_watches: 524288
               fs.inotify.max_user_instances: 8192
+              net.core.rmem_max: 2500000
+              net.core.wmem_max: 2500000
 
   handlers:
     - name: Reboot

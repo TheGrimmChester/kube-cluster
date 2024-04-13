@@ -6,9 +6,9 @@ metadata:
   namespace: flux-system
 spec:
   interval: 30m
+  url: "https://github.com/TheGrimmChester/kube-cluster"
   ref:
-    branch: main
-  url: "https://github.com/TheGrimmChester/kube-cluster.git"
+    branch: "main"
   ignore: |
     # exclude all
     /*
