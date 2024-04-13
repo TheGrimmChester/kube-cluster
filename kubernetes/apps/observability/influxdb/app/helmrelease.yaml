@@ -20,7 +20,7 @@ spec:
   values:
     image:
       repository: "influxdb"
-      tag: "2.7.5"
+      tag: "2.7.6"
     service:
       type: ClusterIP
       port: 80
