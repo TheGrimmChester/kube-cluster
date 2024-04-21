@@ -3,7 +3,6 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - ./namespace.yaml
-  - ./hajimari/ks.yaml
   - ./minio/ks.yaml
   - ./emqx/ks.yaml
   - ./grocy/ks.yaml
@@ -16,11 +15,8 @@ resources:
   - ./vaultwarden/ks.yaml
   - ./mealie/ks.yaml
   - ./mosquitto/ks.yaml
-#  - ./changedetection/ks.yaml
-#  - ./photoprism/ks.yaml
   - ./kubernetes-schemas/ks.yaml
   - ./paperless/ks.yaml
 #  - ./tesla-dashcam/ks.yaml
   - ./joplin/ks.yaml
-#  - ./nextcloud/ks.yaml
   - ./homepage/ks.yaml
