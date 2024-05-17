@@ -169,7 +169,7 @@ spec:
 #      google.feature.node.kubernetes.io/coral: "true"
     nodeSelector:
       intel.feature.node.kubernetes.io/gpu: "true"
-      kubernetes.io/hostname: "node-3"
+#      kubernetes.io/hostname: "node-3"
 #
 #    resources:
 #      requests:
