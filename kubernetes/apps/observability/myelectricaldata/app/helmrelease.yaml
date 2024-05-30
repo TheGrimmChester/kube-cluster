@@ -37,7 +37,7 @@ spec:
     maxHistory: 2
     image:
       repository: m4dm4rtig4n/myelectricaldata
-      tag: latest@sha256:9e597a489df5731fceeea087e5c8452342665a216086491ef10793995004a882
+      tag: latest@sha256:b3278bec23521faf641e0a57578b6a309df114b160aef13d587bca6cd65c80af
     volumeMounts:
       - name: data
         mountPath: /data
