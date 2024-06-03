@@ -448,7 +448,7 @@ spec:
               - severity = "warning"
             equal: ["alertname", "namespace"]
       ingress:
-        enabled: true
+        enabled: false
         pathType: Prefix
         ingressClassName: external
         annotations:
