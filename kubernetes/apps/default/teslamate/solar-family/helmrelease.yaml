@@ -42,7 +42,7 @@ spec:
     env:
       TZ: "Europe/Paris"
       DISABLE_MQTT: "false"
-      BleBaseUrl: "http://192.168.1.83:7210/api"
+      BleBaseUrl: "http://192.168.1.123:7210/api"
     envFrom:
       - secretRef:
           name: teslamate-secret
