@@ -37,3 +37,4 @@ resources:
   - ./external-secrets.yaml
   - ./descheduler.yaml
   - ./nextcloud-charts.yaml
+  - ./authentik-charts.yaml
