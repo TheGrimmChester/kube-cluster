@@ -64,7 +64,7 @@ spec:
         proxy-buffer-size: 16k
         ssl-protocols: TLSv1.3 TLSv1.2
         # See instructions at https://goauthentik.io/docs/providers/proxy/forward_auth
-        global-auth-url: "http://ak-outpost-authentik-embedded-outpost.security.svc.cluster.local:9000/outpost.goauthentik.io/auth/nginx"
+        global-auth-url: "http://ak-outpost-external.security.svc.cluster.local:9000/outpost.goauthentik.io/auth/nginx"
         global-auth-signin: "https://sso.${SECRET_DOMAIN}/outpost.goauthentik.io/start?rd=$scheme://$host$request_uri"
         #global-auth-signin: "https://sso.${SECRET_DOMAIN}/outpost.goauthentik.io/start?rd=$escaped_request_uri"
         #global-auth-response-headers: X-Auth-Username,X-Forwarded-Email,X-Forwarded-Preferred-Username,X-Forwarded-User,X-Auth-Groups
