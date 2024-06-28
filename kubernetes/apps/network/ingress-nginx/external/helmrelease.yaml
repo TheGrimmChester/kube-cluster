@@ -24,6 +24,8 @@ spec:
     - name: cloudflared
       namespace: network
   values:
+    allowSnippetAnnotations: true # Required but risky - see https://github.com/kubernetes/ingress-nginx/issues/7837 - ok as only one user in the cluster
+    watchIngressWithoutClass: true
     fullnameOverride: ingress-nginx-external
     controller:
       replicaCount: 1
