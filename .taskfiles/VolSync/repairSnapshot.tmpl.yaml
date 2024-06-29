@@ -1,0 +1,23 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "repair-snapshot-${rsrc}-${ts}"
+  namespace: "${namespace}"
+spec:
+  ttlSecondsAfterFinished: 3600
+  template:
+    metadata:
+      labels:
+        setGateway: "false"
+        app.kubernetes.io/name: volsync
+    spec:
+      automountServiceAccountToken: false
+      restartPolicy: OnFailure
+      containers:
+        - name: repair-snapshot
+          image: docker.io/restic/restic:0.16.1
+          args: ["repair", "snapshots", "--forget"]
+          envFrom:
+            - secretRef:
+                name: "${rsrc}-restic-secret"
