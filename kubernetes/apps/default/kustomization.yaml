@@ -20,3 +20,4 @@ resources:
 #  - ./tesla-dashcam/ks.yaml
   - ./joplin/ks.yaml
   - ./homepage/ks.yaml
+  - ./photoprism/ks.yaml

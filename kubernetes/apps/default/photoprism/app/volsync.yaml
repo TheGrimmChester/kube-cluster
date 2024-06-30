@@ -3,16 +3,16 @@
 apiVersion: volsync.backube/v1alpha1
 kind: ReplicationSource
 metadata:
-  name: photoprism-family
+  name: photoprism
   namespace: default
 spec:
-  sourcePVC: photoprism-family-config
+  sourcePVC: photoprism-config
   trigger:
     schedule: "0 22 * * *"
   restic:
     copyMethod: Snapshot
     pruneIntervalDays: 10
-    repository: photoprism-family-restic-secret
+    repository: photoprism-restic-secret
     cacheCapacity: 2Gi
     volumeSnapshotClassName: csi-ceph-blockpool
     storageClassName: ceph-block

@@ -89,21 +89,31 @@ spec:
 #        storageClass: ceph-block
 
     persistence:
-      config:
-        enabled: true
-        type: hostPath
-        hostPath: /mnt/Apps/volumes/photoprism
-        mountPath: /photoprism
+      # config:
+      #   enabled: true
+      #   type: hostPath
+      #   hostPath: /mnt/Apps/volumes/photoprism
+      #   mountPath: /photoprism
       originals:
         enabled: true
-        type: hostPath
-        hostPath: /mnt/Backup/Accounts/nmi/Images/photoprism
+        type: nfs
+        server: 192.168.1.101
+        path: /mnt/Backup/Accounts/nmi/Images/photoprism
         mountPath: /photoprism/originals/nicolas
-      public:
-        enabled: true
-        type: hostPath
-        hostPath: /mnt/Backup/Photos/Public
-        mountPath: /photoprism/originals/public
+        # globalMounts:
+        #   - path: /photoprism/originals/nicolas
+      # public:
+      #   enabled: true
+      #   type: hostPath
+      #   hostPath: /mnt/Backup/Photos/Public
+      #   mountPath: /photoprism/originals/public
+
+    volumeClaimTemplates:
+      - name: config
+        mountPath: /mnt/Apps/volumes/photoprism
+        accessMode: ReadWriteOnce
+        size: 100Gi
+        storageClass: ceph-block
 
     service:
       main:
@@ -133,6 +143,13 @@ spec:
         annotations:
           external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
           nginx.ingress.kubernetes.io/proxy-body-size: 4G
+          nginx.ingress.kubernetes.io/auth-method: GET
+          nginx.ingress.kubernetes.io/auth-url: http://authelia.security.svc.cluster.local/api/verify
+          nginx.ingress.kubernetes.io/auth-signin: "https://auth.${SECRET_DOMAIN}?rm=$request_method"
+          nginx.ingress.kubernetes.io/auth-response-headers: Remote-User,Remote-Name,Remote-Groups,Remote-Email
+          nginx.ingress.kubernetes.io/auth-snippet: |
+            proxy_set_header X-Forwarded-Method $request_method;
+
 #          nginx.ingress.kubernetes.io/whitelist-source-range: |
 #            10.0.0.0/8,172.16.0.0/12,192.168.0.0/16
           hajimari.io/enable: "true"
