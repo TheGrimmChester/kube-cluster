@@ -91,6 +91,13 @@ spec:
 #        storageClass: ceph-block
 
     persistence:
+      config:
+        enabled: true
+        mountPath: /photoprism
+        size: 100Gi
+        storageClass: ceph-block
+        accessMode: ReadWriteOnce
+
       # config:
       #   enabled: true
       #   type: hostPath
@@ -109,13 +116,6 @@ spec:
       #   type: hostPath
       #   hostPath: /mnt/Backup/Photos/Public
       #   mountPath: /photoprism/originals/public
-
-    volumeClaimTemplates:
-      - name: config
-        mountPath: /mnt/Apps/volumes/photoprism
-        accessMode: ReadWriteOnce
-        size: 100Gi
-        storageClass: ceph-block
 
     service:
       main:
