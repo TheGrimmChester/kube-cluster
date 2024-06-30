@@ -47,13 +47,13 @@ spec:
               values: ["external"]
       config:
         client-body-buffer-size: 100M
-        client-body-timeout: 120
-        client-header-timeout: 120
+        client-body-timeout: 300
+        client-header-timeout: 300
         enable-brotli: "true"
         enable-real-ip: "true"
         hsts-max-age: 31449600
         keep-alive-requests: 10000
-        keep-alive: 120
+        keep-alive: 300
         log-format-escape-json: "true"
         log-format-upstream: >
           {"time": "$time_iso8601", "remote_addr": "$proxy_protocol_addr", "x_forwarded_for": "$proxy_add_x_forwarded_for",
