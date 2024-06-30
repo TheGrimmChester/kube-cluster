@@ -45,6 +45,7 @@ spec:
               operator: In
               values: ["external"]
       config:
+        client-max-body-size: 10G
         client-body-buffer-size: 100M
         client-body-timeout: 300
         client-header-timeout: 300
