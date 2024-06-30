@@ -16,6 +16,8 @@ vars:
   waitForJobScript: "{{.ROOT_DIR}}/.taskfiles/VolSync/wait-for-job.sh"
   listJobTemplate: "{{.ROOT_DIR}}/.taskfiles/VolSync/ListJob.tmpl.yaml"
   unlockJobTemplate: "{{.ROOT_DIR}}/.taskfiles/VolSync/UnlockJob.tmpl.yaml"
+  repairIndexTemplate: "{{.ROOT_DIR}}/.taskfiles/VolSync/repairIndex.tmpl.yaml"
+  repairSnapshotTemplate: "{{.ROOT_DIR}}/.taskfiles/VolSync/repairSnapshot.tmpl.yaml"
   ts: '{{now | date "150405"}}'
 
 tasks:
@@ -53,6 +55,40 @@ tasks:
     preconditions:
       - sh: test -f {{.waitForJobScript}}
       - sh: test -f {{.unlockJobTemplate}}
+
+  repair-index:
+    desc: Repair restic repository for a given ReplicationSource (ex. task vs:repair-index rsrc=plex [namespace=default])
+    silent: true
+    cmds:
+      - envsubst < <(cat {{.repairIndexTemplate}}) | kubectl apply -f -
+      - bash {{.waitForJobScript}} repair-index-{{.rsrc}}-{{.ts}} {{.namespace}}
+      - kubectl -n {{.namespace}} wait job/repair-index-{{.rsrc}}-{{.ts}} --for condition=complete --timeout=1m
+      - kubectl -n {{.namespace}} logs job/repair-index-{{.rsrc}}-{{.ts}} --container repair-index
+      - kubectl -n {{.namespace}} delete job repair-index-{{.rsrc}}-{{.ts}}
+    vars:
+      rsrc: '{{ or .rsrc (fail "ReplicationSource `rsrc` is required") }}'
+      namespace: '{{.namespace | default "default"}}'
+    env: *task-vars
+    preconditions:
+      - sh: test -f {{.waitForJobScript}}
+      - sh: test -f {{.repairIndexTemplate}}
+
+  repair-snapshot:
+    desc: Repair restic repository for a given ReplicationSource (ex. task vs:repair-index rsrc=plex [namespace=default])
+    silent: true
+    cmds:
+      - envsubst < <(cat {{.repairSnapshotTemplate}}) | kubectl apply -f -
+      - bash {{.waitForJobScript}} repair-snapshot-{{.rsrc}}-{{.ts}} {{.namespace}}
+      - kubectl -n {{.namespace}} wait job/repair-snapshot-{{.rsrc}}-{{.ts}} --for condition=complete --timeout=1m
+      - kubectl -n {{.namespace}} logs job/repair-snapshot-{{.rsrc}}-{{.ts}} --container repair-snapshot
+      - kubectl -n {{.namespace}} delete job repair-snapshot-{{.rsrc}}-{{.ts}}
+    vars:
+      rsrc: '{{ or .rsrc (fail "ReplicationSource `rsrc` is required") }}'
+      namespace: '{{.namespace | default "default"}}'
+    env: *task-vars
+    preconditions:
+      - sh: test -f {{.waitForJobScript}}
+      - sh: test -f {{.repairSnapshotTemplate}}
 
   # To run backup jobs in parallel for all replicationsources:
   #  - kubectl get replicationsources --all-namespaces --no-headers | awk '{print $2, $1}' | xargs --max-procs=4 -l bash -c 'task vs:snapshot rsrc=$0 namespace=$1'

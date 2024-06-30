@@ -4,7 +4,7 @@ metadata:
   name: photoprism-self
   namespace: default
 spec:
-  interval: 5m
+  interval: 30m
   install:
     createNamespace: true
     remediation:
@@ -28,6 +28,8 @@ spec:
   # See https://github.com/bjw-s/helm-charts/blob/main/charts/library/common/values.yaml
   values:
     image:
+      #repository: registry.${SECRET_DOMAIN}/photoprism-sponsor
+      #tag: latest
       repository: docker.io/photoprism/photoprism
       tag: latest@sha256:5db91badeec3f1e32a624f9e6c70541fe5d28ddfd5447d5d258046a5768c1c0b
 
@@ -43,7 +45,7 @@ spec:
       PHOTOPRISM_FFMPEG_ENCODER: intel
       ## See other config options from PhotoPrism documentation: https://docs.photoprism.org/getting-started/config-options/
       # PHOTOPRISM_ADMIN_PASSWORD: "please-change"     # Initial admin password: PLEASE CHANGE!
-      # PHOTOPRISM_DEBUG: "false"                      # Run in debug mode (shows additional log messages)
+      PHOTOPRISM_DEBUG: "false"                      # Run in debug mode (shows additional log messages)
       PHOTOPRISM_PUBLIC: "false"                     # No authentication required (disables password protection)
       PHOTOPRISM_READONLY: "false"                   # Don't modify originals directory (reduced functionality)
       PHOTOPRISM_EXPERIMENTAL: "true"               # Enable experimental features
@@ -51,7 +53,7 @@ spec:
       PHOTOPRISM_SITE_TITLE: "Photoprism"
       PHOTOPRISM_SITE_CAPTION: "Self"
       PHOTOPRISM_SITE_DESCRIPTION: ""
-      PHOTOPRISM_DISABLE_CHOWN: "false"       # disables updating storage permissions via chmod and chown on startup
+      PHOTOPRISM_DISABLE_CHOWN: "true"       # disables updating storage permissions via chmod and chown on startup
       PHOTOPRISM_DISABLE_BACKUPS: "false"     # disables backing up albums and photo metadata to YAML files
       PHOTOPRISM_DISABLE_WEBDAV: "false"      # disables built-in WebDAV server
       PHOTOPRISM_DISABLE_SETTINGS: "false"    # disables settings UI and API
@@ -89,21 +91,31 @@ spec:
 #        storageClass: ceph-block
 
     persistence:
-      config:
-        enabled: true
-        type: hostPath
-        hostPath: /mnt/Apps/volumes/photoprism
-        mountPath: /photoprism
+      # config:
+      #   enabled: true
+      #   type: hostPath
+      #   hostPath: /mnt/Apps/volumes/photoprism
+      #   mountPath: /photoprism
       originals:
         enabled: true
-        type: hostPath
-        hostPath: /mnt/Backup/Accounts/nmi/Images/photoprism
+        type: nfs
+        server: 192.168.1.101
+        path: /mnt/Backup/Accounts/nmi/Images/photoprism
         mountPath: /photoprism/originals/nicolas
-      public:
-        enabled: true
-        type: hostPath
-        hostPath: /mnt/Backup/Photos/Public
-        mountPath: /photoprism/originals/public
+        # globalMounts:
+        #   - path: /photoprism/originals/nicolas
+      # public:
+      #   enabled: true
+      #   type: hostPath
+      #   hostPath: /mnt/Backup/Photos/Public
+      #   mountPath: /photoprism/originals/public
+
+    volumeClaimTemplates:
+      - name: config
+        mountPath: /mnt/Apps/volumes/photoprism
+        accessMode: ReadWriteOnce
+        size: 100Gi
+        storageClass: ceph-block
 
     service:
       main:
@@ -133,6 +145,13 @@ spec:
         annotations:
           external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
           nginx.ingress.kubernetes.io/proxy-body-size: 4G
+          nginx.ingress.kubernetes.io/auth-method: GET
+          nginx.ingress.kubernetes.io/auth-url: http://authelia.security.svc.cluster.local/api/verify
+          nginx.ingress.kubernetes.io/auth-signin: "https://auth.${SECRET_DOMAIN}?rm=$request_method"
+          nginx.ingress.kubernetes.io/auth-response-headers: Remote-User,Remote-Name,Remote-Groups,Remote-Email
+          nginx.ingress.kubernetes.io/auth-snippet: |
+            proxy_set_header X-Forwarded-Method $request_method;
+
 #          nginx.ingress.kubernetes.io/whitelist-source-range: |
 #            10.0.0.0/8,172.16.0.0/12,192.168.0.0/16
           hajimari.io/enable: "true"
