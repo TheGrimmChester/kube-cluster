@@ -6,7 +6,7 @@ metadata:
   name: photoprism
   namespace: default
 spec:
-  sourcePVC: photoprism-config
+  sourcePVC: photoprism-self-config
   trigger:
     schedule: "0 22 * * *"
   restic:
