@@ -31,13 +31,6 @@ spec:
   values:
     controllers:
       main:
-        volumeClaimTemplates:
-          - name: config
-            mountPath: /config
-            accessMode: ReadWriteOnce
-            size: 5Gi
-            storageClass: ceph-block
-            strategy: Recreate
 #        pod:
 #          hostNetwork: true
 #          dnsPolicy: ClusterFirstWithHostNet
@@ -171,6 +164,13 @@ spec:
                   port: http
 
 
+    volumeClaimTemplates:
+      - name: config
+        mountPath: /config
+        accessMode: ReadWriteOnce
+        size: 5Gi
+        storageClass: ceph-block
+        strategy: Recreate
     persistence:
       config:
         existingClaim: home-assistant-config
