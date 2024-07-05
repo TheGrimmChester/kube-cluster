@@ -163,11 +163,14 @@ spec:
                 service:
                   identifier: codeserver
                   port: http
+    volumeClaimTemplates:
+      - name: config
+        mountPath: /config
+        accessMode: ReadWriteOnce
+        size: 5Gi
+        storageClass: ceph-block
+
     persistence:
-      config:
-        existingClaim: config-home-assistant-0
-        globalMounts:
-          - path: /config
       hass-dbus:
         enabled: true
         type: hostPath
