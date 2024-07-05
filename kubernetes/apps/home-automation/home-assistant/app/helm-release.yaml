@@ -163,12 +163,6 @@ spec:
                 service:
                   identifier: codeserver
                   port: http
-    volumeClaimTemplates:
-      - name: config
-        mountPath: /config
-        accessMode: ReadWriteOnce
-        size: 5Gi
-        storageClass: ceph-block
 
     persistence:
       hass-dbus:
