@@ -38,7 +38,7 @@ spec:
   values:
     image:
       repository: pkuehnel/teslasolarcharger
-      tag: 2.29.2@sha256:190f9fabb54ae7a01f9b4fba6a95cba6a7164ac71bfa3e0b1b74f3b821238927
+      tag: 2.30.0@sha256:cddd48c05b8dcbf6b8adc4f65fdd651dcd3abf6ad35bb050c996f354e06a91e6
     env:
       TZ: "Europe/Paris"
       DISABLE_MQTT: "false"
