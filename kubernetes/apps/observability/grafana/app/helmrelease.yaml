@@ -419,10 +419,16 @@ spec:
         provider:
           disableDelete: true
           foldersFromFilesStructure: true
+        skipTlsVerify: true
+        reloadURL: "https://grafana.observability.svc.cluster.local:3000/api/admin/provisioning/dashboards/reload"
+
       datasources:
         enabled: true
         searchNamespace: ALL
         labelValue: ""
+        skipTlsVerify: true
+        reloadURL: "https://grafana.observability.svc.cluster.local:3000/api/admin/provisioning/datasources/reload"
+
     plugins:
       - grafana-clock-panel
       - grafana-piechart-panel
