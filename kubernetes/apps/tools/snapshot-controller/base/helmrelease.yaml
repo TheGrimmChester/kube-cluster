@@ -3,52 +3,46 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
-  name: &app snapshot-controller
-  namespace: tools
+  name: snapshot-controller
 spec:
-  interval: 15m
+  interval: 30m
   chart:
     spec:
-      chart: *app
-      version: 1.9.2
+      chart: snapshot-controller
+      version: 3.0.5
       sourceRef:
         kind: HelmRepository
         name: piraeus
         namespace: flux-system
-      interval: 15m
   install:
-    createNamespace: true
     crds: CreateReplace
     remediation:
-      retries: 5
+      retries: 3
   upgrade:
+    cleanupOnFail: true
     crds: CreateReplace
     remediation:
-      retries: 5
+      strategy: rollback
+      retries: 3
   values:
-    volumeSnapshotClasses:
-      - name: csi-ceph-blockpool
-        driver: rook-ceph.rbd.csi.ceph.com
-        annotations:
-          snapshot.storage.kubernetes.io/is-default-class: "false"
-        parameters:
-          clusterID: rook-ceph
-          csi.storage.k8s.io/snapshotter-secret-name: rook-csi-rbd-provisioner
-          csi.storage.k8s.io/snapshotter-secret-namespace: rook-ceph
-        deletionPolicy: Delete
-      - name: csi-hostpath-snapclass
-        driver: hostpath.csi.k8s.io
-        annotations:
-          snapshot.storage.kubernetes.io/is-default-class: "true"
-        parameters:
-        deletionPolicy: Delete
-#    affinity:
-#      nodeAffinity:
-#        requiredDuringSchedulingIgnoredDuringExecution:
-#          nodeSelectorTerms:
-#            - matchExpressions:
-#                - key: kubernetes.io/hostname
-#                  operator: In
-#                  values:
-#                    - node-3
-#                    - worker-1
+    controller:
+      volumeSnapshotClasses:
+        - name: csi-ceph-blockpool
+          driver: rook-ceph.rbd.csi.ceph.com
+          annotations:
+            snapshot.storage.kubernetes.io/is-default-class: "false"
+          parameters:
+            clusterID: rook-ceph
+            csi.storage.k8s.io/snapshotter-secret-name: rook-csi-rbd-provisioner
+            csi.storage.k8s.io/snapshotter-secret-namespace: rook-ceph
+          deletionPolicy: Delete
+        - name: csi-hostpath-snapclass
+          driver: hostpath.csi.k8s.io
+          annotations:
+            snapshot.storage.kubernetes.io/is-default-class: "true"
+          parameters:
+          deletionPolicy: Delete
+      serviceMonitor:
+        create: true
+    webhook:
+      enabled: false
