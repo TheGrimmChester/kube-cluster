@@ -8,7 +8,7 @@ globalDefault: false
 description: "This priority class should be used for XYZ service pods only."
 
 ---
-apiVersion: helm.toolkit.fluxcd.io/v2beta2
+apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: teslamate-solar-f
