@@ -42,13 +42,13 @@ spec:
           snapshot.storage.kubernetes.io/is-default-class: "true"
         parameters:
         deletionPolicy: Delete
-    affinity:
-      nodeAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          nodeSelectorTerms:
-            - matchExpressions:
-                - key: kubernetes.io/hostname
-                  operator: In
-                  values:
-                    - node-3
-                    - worker-1
+#    affinity:
+#      nodeAffinity:
+#        requiredDuringSchedulingIgnoredDuringExecution:
+#          nodeSelectorTerms:
+#            - matchExpressions:
+#                - key: kubernetes.io/hostname
+#                  operator: In
+#                  values:
+#                    - node-3
+#                    - worker-1
