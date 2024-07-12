@@ -242,61 +242,61 @@ spec:
           datasource: TeslaMate
 
       teslamate:
-        carloscuezva-teslamate-battery-health:
-          url: https://raw.githubusercontent.com/CarlosCuezva/dashboards-Grafana-Teslamate/main/dashboards/battery-health.json
-          datasource: TeslaMate
-        carloscuezva-teslamate-charges:
-          url: https://raw.githubusercontent.com/CarlosCuezva/dashboards-Grafana-Teslamate/main/dashboards/charges.json
-          datasource: TeslaMate
-        carloscuezva-teslamate-charging-costs-stats:
-          url: https://raw.githubusercontent.com/CarlosCuezva/dashboards-Grafana-Teslamate/main/dashboards/charging-costs-stats.json
-          datasource: TeslaMate
-          folder:
-        carloscuezva-teslamate-charging-curves:
-          url: https://raw.githubusercontent.com/CarlosCuezva/dashboards-Grafana-Teslamate/main/dashboards/charging-curves.json
-          datasource: TeslaMate
-        carloscuezva-teslamate-charging-tops:
-          url: https://raw.githubusercontent.com/CarlosCuezva/dashboards-Grafana-Teslamate/main/dashboards/charging-tops.json
-          datasource: TeslaMate
-          folder:
-        carloscuezva-teslamate-current-charge-view:
-          url: https://raw.githubusercontent.com/CarlosCuezva/dashboards-Grafana-Teslamate/main/dashboards/current-charge-view.json
-          datasource: TeslaMate
-        carloscuezva-teslamate-drive-tops:
-          url: https://raw.githubusercontent.com/CarlosCuezva/dashboards-Grafana-Teslamate/main/dashboards/drive-tops.json
-          datasource: TeslaMate
-          folder:
-        carloscuezva-teslamate-drives:
-          url: https://raw.githubusercontent.com/CarlosCuezva/dashboards-Grafana-Teslamate/main/dashboards/drives.json
-          datasource: TeslaMate
-        carloscuezva-teslamate-locations:
-          url: https://raw.githubusercontent.com/CarlosCuezva/dashboards-Grafana-Teslamate/main/dashboards/locations.json
-          datasource: TeslaMate
-        carloscuezva-teslamate-overview:
-          url: https://raw.githubusercontent.com/CarlosCuezva/dashboards-Grafana-Teslamate/main/dashboards/overview.json
-          datasource: TeslaMate
-        carloscuezva-teslamate-states:
-          url: https://raw.githubusercontent.com/CarlosCuezva/dashboards-Grafana-Teslamate/main/dashboards/states.json
-          datasource: TeslaMate
-        carloscuezva-teslamate-tire-pressure:
-          url: https://raw.githubusercontent.com/CarlosCuezva/dashboards-Grafana-Teslamate/main/dashboards/tire-pressure.json
-          datasource: TeslaMate
+#        carloscuezva-teslamate-battery-health:
+#          url: https://raw.githubusercontent.com/CarlosCuezva/dashboards-Grafana-Teslamate/main/dashboards/battery-health.json
+#          datasource: TeslaMate
+#        carloscuezva-teslamate-charges:
+#          url: https://raw.githubusercontent.com/CarlosCuezva/dashboards-Grafana-Teslamate/main/dashboards/charges.json
+#          datasource: TeslaMate
+#        carloscuezva-teslamate-charging-costs-stats:
+#          url: https://raw.githubusercontent.com/CarlosCuezva/dashboards-Grafana-Teslamate/main/dashboards/charging-costs-stats.json
+#          datasource: TeslaMate
+#          folder:
+#        carloscuezva-teslamate-charging-curves:
+#          url: https://raw.githubusercontent.com/CarlosCuezva/dashboards-Grafana-Teslamate/main/dashboards/charging-curves.json
+#          datasource: TeslaMate
+#        carloscuezva-teslamate-charging-tops:
+#          url: https://raw.githubusercontent.com/CarlosCuezva/dashboards-Grafana-Teslamate/main/dashboards/charging-tops.json
+#          datasource: TeslaMate
+#          folder:
+#        carloscuezva-teslamate-current-charge-view:
+#          url: https://raw.githubusercontent.com/CarlosCuezva/dashboards-Grafana-Teslamate/main/dashboards/current-charge-view.json
+#          datasource: TeslaMate
+#        carloscuezva-teslamate-drive-tops:
+#          url: https://raw.githubusercontent.com/CarlosCuezva/dashboards-Grafana-Teslamate/main/dashboards/drive-tops.json
+#          datasource: TeslaMate
+#          folder:
+#        carloscuezva-teslamate-drives:
+#          url: https://raw.githubusercontent.com/CarlosCuezva/dashboards-Grafana-Teslamate/main/dashboards/drives.json
+#          datasource: TeslaMate
+#        carloscuezva-teslamate-locations:
+#          url: https://raw.githubusercontent.com/CarlosCuezva/dashboards-Grafana-Teslamate/main/dashboards/locations.json
+#          datasource: TeslaMate
+#        carloscuezva-teslamate-overview:
+#          url: https://raw.githubusercontent.com/CarlosCuezva/dashboards-Grafana-Teslamate/main/dashboards/overview.json
+#          datasource: TeslaMate
+#        carloscuezva-teslamate-states:
+#          url: https://raw.githubusercontent.com/CarlosCuezva/dashboards-Grafana-Teslamate/main/dashboards/states.json
+#          datasource: TeslaMate
+#        carloscuezva-teslamate-tire-pressure:
+#          url: https://raw.githubusercontent.com/CarlosCuezva/dashboards-Grafana-Teslamate/main/dashboards/tire-pressure.json
+#          datasource: TeslaMate
+#
+#        jheredianet-teslamate-continuous-trip:
+#          url: https://raw.githubusercontent.com/jheredianet/Teslamate-CustomGrafanaDashboards/main/dashboards/ContinuousTrips.json
+#          datasource: TeslaMate
 
-        jheredianet-teslamate-continuous-trip:
-          url: https://raw.githubusercontent.com/jheredianet/Teslamate-CustomGrafanaDashboards/main/dashboards/ContinuousTrips.json
-          datasource: TeslaMate
-
-        teslamate-battery-health-lfp:
-          url: https://raw.githubusercontent.com/teslamate-org/teslamate/master/grafana/dashboards/battery-health-lfp.json
+        teslamate-battery-health:
+          url: https://raw.githubusercontent.com/teslamate-org/teslamate/master/grafana/dashboards/battery-health.json
           datasource: TeslaMate
         teslamate-charge-level:
           url: https://raw.githubusercontent.com/teslamate-org/teslamate/master/grafana/dashboards/charge-level.json
           datasource: TeslaMate
+        teslamate-charges:
+          url: https://raw.githubusercontent.com/teslamate-org/teslamate/master/grafana/dashboards/charges.json
+          datasource: TeslaMate
         teslamate-charging-stats:
           url: https://raw.githubusercontent.com/teslamate-org/teslamate/master/grafana/dashboards/charging-stats.json
-          datasource: TeslaMate
-        teslamate-charging-stats-lfp:
-          url: https://raw.githubusercontent.com/teslamate-org/teslamate/master/grafana/dashboards/charging-stats-lfp.json
           datasource: TeslaMate
         teslamate-drive-stats:
           url: https://raw.githubusercontent.com/teslamate-org/teslamate/master/grafana/dashboards/drive-stats.json
@@ -315,9 +315,6 @@ spec:
           datasource: TeslaMate
         teslamate-overview:
           url: https://raw.githubusercontent.com/teslamate-org/teslamate/master/grafana/dashboards/overview.json
-          datasource: TeslaMate
-        teslamate-overview-lfp:
-          url: https://raw.githubusercontent.com/teslamate-org/teslamate/master/grafana/dashboards/overview-lfp.json
           datasource: TeslaMate
         teslamate-projected-range:
           url: https://raw.githubusercontent.com/teslamate-org/teslamate/master/grafana/dashboards/projected-range.json
