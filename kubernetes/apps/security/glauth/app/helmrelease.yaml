@@ -23,16 +23,6 @@ spec:
     remediation:
       retries: 5
   values:
-    affinity:
-      nodeAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          nodeSelectorTerms:
-            - matchExpressions:
-                - key: kubernetes.io/hostname
-                  operator: In
-                  values:
-                    - node-3
-                    - worker-1
     controller:
       replicas: 1
       strategy: RollingUpdate

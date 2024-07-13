@@ -29,17 +29,6 @@ spec:
     keepHistory: false
 
   values:
-    affinity:
-      nodeAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          nodeSelectorTerms:
-            - matchExpressions:
-                - key: kubernetes.io/hostname
-                  operator: In
-                  values:
-                    - khadas
-                    - node-3
-                    - worker-1
     controller:
       replicas: 1
       strategy: RollingUpdate

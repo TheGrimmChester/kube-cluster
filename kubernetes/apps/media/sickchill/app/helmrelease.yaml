@@ -87,16 +87,6 @@ spec:
 #      intel.feature.node.kubernetes.io/gpu: "true"
       kubernetes.io/hostname: "worker-1"
 
-    affinity:
-      podAntiAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchExpressions:
-                - key: app.kubernetes.io/name
-                  operator: In
-                  values: [ "node-3" ]
-            topologyKey: kubernetes.io/hostname
-
     ingress:
       main:
         enabled: true

@@ -102,5 +102,3 @@ spec:
         accessMode: ReadWriteOnce
 
     priorityClassName: "high-priority"
-    nodeSelector:
-      kubernetes.io/hostname: "node-3"

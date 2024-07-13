@@ -90,13 +90,3 @@ spec:
         accessMode: ReadWriteOnce
         size: 10Mi
         storageClass: ceph-block
-    affinity:
-      nodeAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          nodeSelectorTerms:
-            - matchExpressions:
-                - key: kubernetes.io/hostname
-                  operator: In
-                  values:
-                    - node-3
-                    - worker-1
