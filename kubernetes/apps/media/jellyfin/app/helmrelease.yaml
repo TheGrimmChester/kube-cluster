@@ -8,138 +8,99 @@ spec:
   interval: 15m
   chart:
     spec:
+      interval: 15m
       chart: app-template
-      version: 1.5.1
+      version: 3.2.1
       sourceRef:
         kind: HelmRepository
         name: bjw-s
         namespace: flux-system
-  maxHistory: 3
   install:
-    createNamespace: true
     remediation:
-      retries: 30
+      retries: 5
   upgrade:
-    cleanupOnFail: true
     remediation:
-      retries: 30
-  uninstall:
-    keepHistory: false
+      retries: 5
   values:
-    controller:
-      type: statefulset
-    image:
-      repository: ghcr.io/onedr0p/jellyfin
-      tag: 10.8.11@sha256:926e2a9f6677a0c7b12feba29f36c954154869318d6a52df72f72ff9c74cf494
-    env:
-      TZ: America/New_York
+    controllers:
+      main:
+        pod:
+          securityContext:
+            runAsUser: 568
+            runAsGroup: 568
+            fsGroup: 568
+            fsGroupChangePolicy: OnRootMismatch
+            supplementalGroups:
+              - 44
+              - 109
+              - 5600
+              - 10000
+        containers:
+          main:
+            image:
+              repository: docker.io/jellyfin/jellyfin
+              tag: 10.9.7@sha256:76930362d2c266e8f0b2f51f1c6b039a5207525d0e138a1cdbec870c66c34b0f
+            env:
+              TZ: "${TIMEZONE}"
+            resources:
+              requests:
+                gpu.intel.com/i915: 1
+                cpu: 23m
+                memory: 7486M
+              limits:
+                gpu.intel.com/i915: 1
+                memory: 7486M
     service:
       main:
+        controller: main
         type: LoadBalancer
-        #externalIPs: ["192.168.1.206"]
-        loadBalancerIP: "192.168.1.206"
+        externalTrafficPolicy: Local
         annotations:
-          "io.cilium/lb-ipam-ips": "192.168.1.206"
-
-        #        externalTrafficPolicy: Local
+          io.cilium/lb-ipam-ips: "192.168.1.206"
         ports:
           http:
-            port: &port 8096
-    # serviceMonitor:
-    #   main:
-    #     enabled: true
-    probes:
-      liveness: &probes
-        enabled: true
-        custom: true
-        spec:
-          httpGet:
-            path: /health
-            port: *port
-          initialDelaySeconds: 0
-          periodSeconds: 10
-          timeoutSeconds: 1
-          failureThreshold: 3
-      readiness: *probes
-      startup:
-        enabled: false
+            port: 8096
     ingress:
       main:
-        enabled: true
-        ingressClassName: external
+        className: external
         annotations:
-#          nginx.ingress.kubernetes.io/whitelist-source-range: |
-#            10.0.0.0/8,172.16.0.0/12,192.168.0.0/16
-          hajimari.io/icon: simple-icons:jellyfin
-          hajimari.io/enable: "true"
+          cert-manager.io/cluster-issuer: "letsencrypt-production"
+          external-dns/is-public: "true"
           gethomepage.dev/enabled: "true"
           gethomepage.dev/name: "Jellyfin"
-          gethomepage.dev/description: ""
-          gethomepage.dev/group: Média
-          gethomepage.dev/icon: "jellyfin.png"
+          gethomepage.dev/group: "Media Management"
+          gethomepage.dev/icon: "jellyfin"
+          gethomepage.dev/description: "Jellyfin enables you to collect, manage, and stream your media."
         hosts:
-          - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
+          - host: &host "jellyfin.${SECRET_DOMAIN}"
             paths:
               - path: /
-                pathType: Prefix
+                service:
+                  identifier: main
+                  port: http
         tls:
           - hosts:
               - *host
-            secretName: clouded-fr-production-tls
-    podSecurityContext:
-      runAsUser: 568
-      runAsGroup: 568
-      fsGroup: 568
-      fsGroupChangePolicy: OnRootMismatch
-      supplementalGroups: [44, 109, 10000]
-#    volumeClaimTemplates:
-#      - name: config
-#        mountPath: /config
-#        accessMode: ReadWriteOnce
-#        size: 50Gi
-#        storageClass: ceph-block
     persistence:
       config:
-        enabled: true
         type: nfs
-        server: "192.168.1.98"
-        path: /mnt/ssd_4to/Apps/jellyfin
-        mountPath: /config
-        readOnly: false
-      # config:
-      #   enabled: true
-      #   type: hostPath
-      #   hostPath: "/mnt/Apps/kube/volumes/jellyfin"
-      #   mountPath: "/config"
+        server: "192.168.1.32"
+        path: /mnt/ssd_4to/Apps/jellyfin/
+        globalMounts:
+          - path: /config
+            readOnly: false
       media:
-        enabled: true
         type: nfs
         server: "192.168.1.101"
-        path: /mnt/Entertainments
-        mountPath: /media
-        readOnly: true
+        path: /mnt/Entertainments/
+        globalMounts:
+          - path: /media
+            readOnly: true
       transcode:
-        enabled: true
         type: emptyDir
-    nodeSelector:
-#      node-role.kubernetes.io/worker: "true"
-      intel.feature.node.kubernetes.io/gpu: "true"
-      kubernetes.io/hostname: "node-3"
-
-    affinity:
-      podAntiAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchExpressions:
-                - key: app.kubernetes.io/name
-                  operator: In
-                  values: ["node-3"]
-            topologyKey: kubernetes.io/hostname
-#    resources:
-#      requests:
-#        gpu.intel.com/i915: 1
-#        cpu: 100m
-#        memory: 1000Mi
-#      limits:
-#        gpu.intel.com/i915: 1
-#        memory: 4000Mi
+        globalMounts:
+          - path: /config/transcodes
+      cache:
+        type: emptyDir
+        globalMounts:
+          - path: /cache
