@@ -28,10 +28,10 @@ spec:
   # See https://github.com/bjw-s/helm-charts/blob/main/charts/library/common/values.yaml
   values:
     image:
-      repository: registry.${SECRET_DOMAIN}/photoprism-sponsor
-      tag: latest
-      #repository: docker.io/photoprism/photoprism
-      #tag: latest@sha256:5db91badeec3f1e32a624f9e6c70541fe5d28ddfd5447d5d258046a5768c1c0b
+#      repository: registry.${SECRET_DOMAIN}/photoprism-sponsor
+#      tag: latest
+      repository: docker.io/photoprism/photoprism
+      tag: latest@sha256:5db91badeec3f1e32a624f9e6c70541fe5d28ddfd5447d5d258046a5768c1c0b
 
     envFrom:
     - secretRef:
@@ -83,11 +83,12 @@ spec:
       runAsGroup: 1002
       fsGroup: 1002
       fsGroupChangePolicy: OnRootMismatch
+
 #    volumeClaimTemplates:
 #      - name: config
 #        mountPath: /photoprism
 #        accessMode: ReadWriteOnce
-#        size: 1Gi
+#        size: 100Gi
 #        storageClass: ceph-block
 
     persistence:
