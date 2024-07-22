@@ -28,7 +28,7 @@ spec:
     watchIngressWithoutClass: true
     fullnameOverride: ingress-nginx-external
     controller:
-      replicaCount: 1
+      replicaCount: 3
       service:
         annotations:
           external-dns.alpha.kubernetes.io/hostname: "external.${SECRET_DOMAIN}"
