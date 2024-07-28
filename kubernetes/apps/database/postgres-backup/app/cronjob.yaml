@@ -40,7 +40,7 @@ spec:
                       name: cloudnative-pg-secret
                       key: password
                 - name: POSTGRES_DB
-                  value: "authelia,grafana,home_assistant,home_assistant-chris,teslamate,vaultwarden,myelectricaldata,paperless,joplin"
+                  value: "authelia,grafana,home_assistant,home_assistant-chris,teslamate,vaultwarden,myelectricaldata,paperless,joplin,mealie"
               volumeMounts:
                 - name: nas-backups
                   mountPath: /backups
@@ -95,7 +95,7 @@ spec:
                       name: cloudnative-pg-secret
                       key: password
                 - name: POSTGRES_DB
-                  value: "authelia,grafana,home_assistant,home_assistant-chris,teslamate,vaultwarden,myelectricaldata,paperless,joplin"
+                  value: "authelia,grafana,home_assistant,home_assistant-chris,teslamate,vaultwarden,myelectricaldata,paperless,joplin,mealie"
               volumeMounts:
                 - name: nas-backups
                   mountPath: /backups
