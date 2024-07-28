@@ -7,6 +7,6 @@ resources:
   - pve.yaml
   - console-s3-alsa.yaml
   - api-s3-alsa.yaml
-  - plex.yaml
+#  - plex.yaml
   - solar-router.yaml
   - dtu.yaml

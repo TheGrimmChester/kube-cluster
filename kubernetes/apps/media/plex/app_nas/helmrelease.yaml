@@ -1,166 +1,152 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.devbu.io/helmrelease_v2beta1.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: plex
-  namespace: media
 spec:
-  interval: 15m
+  interval: 30m
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
+      version: 3.2.1
       sourceRef:
         kind: HelmRepository
         name: bjw-s
         namespace: flux-system
-  maxHistory: 3
   install:
-    createNamespace: true
     remediation:
-      retries: 30
+      retries: 3
   upgrade:
     cleanupOnFail: true
     remediation:
-      retries: 30
-  uninstall:
-    keepHistory: false
+      strategy: rollback
+      retries: 3
+#  dependsOn:
+#    - name: cluster-apps-intel-device-plugin-gpu
+#      namespace: tools
+#    - name: rook-ceph-cluster
+#      namespace: rook-ceph
   values:
-    controller:
-      type: statefulset
-      annotations:
-        reloader.stakater.com/auto: "true"
-
-    image:
-      repository: ghcr.io/onedr0p/plex
-      tag: 1.32.0.6918-6f393eda1@sha256:1a7ca3a38bbe42d846f0e3cd812fba4db6c1eafc63478bb809643d04a3501dc0
-    env:
-      TZ: Europe/Paris
-      ALLOWED_NETWORKS: 172.16.0.0/12,10.0.0.0/8,192.168.0.0/16
-      PLEX_PREFERENCE_1: "FriendlyName=Kube"
-      ADVERTISE_IP: "https://plex.${SECRET_DOMAIN}:32401/,https://plex.${SECRET_DOMAIN}:443/,http://192.168.1.204:32400/,http://plex.media.svc.cluster.local:32400"
-    envFrom:
-      - secretRef:
-          name: plex-secret
-
+    controllers:
+      plex:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: ghcr.io/onedr0p/plex
+              tag: 1.40.4.8679-424562606@sha256:6caeca24f3b08206a94a6a9c102e2c0c14d46d5a9163241716559e8c83f53ff8
+            env:
+              TZ: Europe/Paris
+              PLEX_PREFERENCE_1: "FriendlyName=Kube"
+              PLEX_ADVERTISE_URL: "https://plex.${SECRET_DOMAIN}:443/,http://192.168.1.204:32400/,http://plex.media.svc.cluster.local:32400"
+              PLEX_NO_AUTH_NETWORKS: 192.168.0.0/16
+              ALLOWED_NETWORKS: 172.16.0.0/12,10.0.0.0/8,192.168.0.0/16
+            probes:
+              liveness: &probes
+                enabled: false
+                custom: true
+                spec:
+                  httpGet:
+                    path: /identity
+                    port: 32400
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 10
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+            resources:
+              requests:
+                cpu: 100m
+              limits:
+                gpu.intel.com/i915: 1
+#                memory: 16Gi
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: OnRootMismatch
+        # Hardware acceleration using an Intel iGPU w/ QuickSync
+        # These IDs below should be matched to your `video` and `render` group on the host
+        # To obtain those IDs run the following grep statement on the host:
+        # $ cat /etc/group | grep "video\|render"
+        # video:x:44:
+        # render:x:105:
+        supplementalGroups: [44, 105, 10000]
+        seccompProfile: { type: RuntimeDefault }
+      nodeSelector:
+        intel.feature.node.kubernetes.io/gpu: "true"
     service:
-      main:
+      app:
+        controller: plex
         type: LoadBalancer
-        loadBalancerIP: "192.168.1.204"
-#        externalTrafficPolicy: Local
+        annotations:
+          io.cilium/lb-ipam-ips: 192.168.1.204
         ports:
           http:
             port: 32400
-
     ingress:
-      main:
-        enabled: true
-        ingressClassName: external
+      app:
         annotations:
           external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
-          hajimari.io/icon: simple-icons:plex
-          hajimari.io/enable: "true"
-          hajimari.io/appName: plex
-          hajimari.io/url: "https://plex.${SECRET_DOMAIN}/web/"
           nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-          nginx.ingress.kubernetes.io/configuration-snippet: |
-            proxy_set_header Accept-Encoding "";
-            sub_filter '</head>' '<link rel="stylesheet" type="text/css" href="https://theme-park.devbu.io/css/base/plex/nord.css"></head>';
-            sub_filter_once on;
-
-            location = / {
-              if ($http_x_plex_device = ""){
-                return 301 $scheme://$host/web/index.html;
-              }
-            }
-
+        className: external
         hosts:
-          - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
+          - host: "plex.${SECRET_DOMAIN}"
             paths:
               - path: /
-                pathType: Prefix
-        tls:
-          - hosts:
-              - *host
-            secretName: clouded-fr-production-tls
-    podSecurityContext:
-      runAsUser: 568
-      runAsGroup: 568
-      fsGroup: 568
-      fsGroupChangePolicy: OnRootMismatch
-      # # Hardware acceleration using an Intel iGPU w/ QuickSync
-      # # These IDs below should be matched to your `video` and `render` group on the host
-      # # To obtain those IDs run the following grep statement on the host:
-      # # $ cat /etc/group | grep "video\|render"
-      # # video:x:44:
-      # # render:x:109:
-      supplementalGroups: [44, 109, 10000]
-
+                service:
+                  identifier: app
+                  port: http
     persistence:
+#      config:
+#        existingClaim: plex
+#        # TODO: If setting up Plex for the first time, you'll want to add the globalMounts section
+#        # globalMounts:
+#        #   - path: /config/Library/Application Support/Plex Media Server
+#      # Separate PVC for cache to avoid backing up cache files
       config:
-        enabled: true
         type: nfs
-        server: "192.168.1.101"
+        server: 192.168.1.101
         path: /mnt/Apps/kube/volumes/plex
-        mountPath: /config
-        readOnly: false
-#      media:
-#        enabled: true
-#        type: nfs
-#        server: "192.168.1.101"
-#        path: /mnt/Entertainments
-#        mountPath: /media/Entertainments
-#        readOnly: false
-#      media-external:
-#        enabled: true
-#        type: nfs
-#        server: "192.168.1.101"
-#        path: /mnt/ntfs/Entertainment
-#        mountPath: /media/external/Entertainments
-#        readOnly: false
-#      media:
-#        enabled: true
-#        type: hostPath
-#        hostPath: "/mnt/Entertainments"
-#        mountPath: "/media/Entertainments"
-#      media-external:
-#        enabled: true
-#        type: hostPath
-#        hostPath: "/mnt/ntfs/Entertainment"
-#        mountPath: "/media/external/Entertainments"
-      media:
-        enabled: true
-        type: nfs
-        server: "192.168.1.101"
-        path: /mnt/Entertainments
-        mountPath: /media/Entertainments
-        readOnly: false
-      media-external:
-        enabled: true
-        type: nfs
-        server: "192.168.1.101"
-        path: /mnt/ntfs/Entertainment
-        mountPath: /media/external/Entertainments
-        readOnly: false
-
-      transcode:
-        enabled: true
+        globalMounts:
+          - path: /config
+            readOnly: false
+#      cache:
+#        existingClaim: plex-cache
+#        globalMounts:
+#          - path: /config/Library/Application Support/Plex Media Server/Cache
+      logs:
         type: emptyDir
-        accessMode: ReadWriteOnce
-        emptyDir:
-          enabled: true
-          medium: "Memory"
-          sizeLimit: 1Gi
-
-    nodeSelector:
-      intel.feature.node.kubernetes.io/gpu: "true"
-      kubernetes.io/hostname: "node-3"
-    resources:
-      requests:
-        gpu.intel.com/i915: 1
-#        cpu: 100m
-#        memory: 1000Mi
-      limits:
-        gpu.intel.com/i915: 1
-#        memory: 4000Mi
+        globalMounts:
+          - path: /config/Library/Application Support/Plex Media Server/Logs
+      tmp:
+        type: emptyDir
+      transcode:
+        type: emptyDir
+      media:
+        type: nfs
+        server: 192.168.1.101
+        path: /mnt/Entertainments
+        globalMounts:
+          - path: /media/Entertainments
+            readOnly: false
+      media-external:
+        type: nfs
+        server: 192.168.1.101
+        path: /mnt/ntfs/Entertainment
+        globalMounts:
+          - path: /media/external/Entertainments
+            readOnly: false
