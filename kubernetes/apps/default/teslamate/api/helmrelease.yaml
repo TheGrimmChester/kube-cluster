@@ -29,7 +29,7 @@ spec:
   values:
     image:
       repository: tobiasehlert/teslamateapi
-      tag: latest@sha256:ca6973a311a98c34378c3b86c72b56644e726df18990d7fa70aa1041f16c8a48
+      tag: latest@sha256:932036ad9e61d65018470be6f8dd2f6860723cc4e6878e9d913a9d467a995f02
     env:
       TZ: "Europe/Paris"
       DISABLE_MQTT: "false"
