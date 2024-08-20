@@ -111,15 +111,15 @@ spec:
     #https://github.com/Diaoul/home-ops/blob/main/cluster/apps/home-automation/frigate/helmrelease.yaml
 
     persistence:
-      config:
-      #   globalMounts:
-      #     - path: /config
-        enabled: true
-        type: nfs
-        server: "192.168.1.32"
-        path: /mnt/ssd_4to/cameras/frigate/config
-        mountPath: /config
-        readOnly: false
+      # config:
+      # #   globalMounts:
+      # #     - path: /config
+      #   enabled: true
+      #   type: nfs
+      #   server: "192.168.1.32"
+      #   path: /mnt/ssd_4to/cameras/frigate/config
+      #   mountPath: /config
+      #   readOnly: false
 #
 #      recs:
 #        enabled: true
