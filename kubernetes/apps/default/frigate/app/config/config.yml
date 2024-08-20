@@ -119,7 +119,6 @@ cameras:
           roles:
             - audio
             - record
-            - rtmp
     detect:
       height: 360
       width: 640
@@ -161,7 +160,6 @@ cameras:
           roles:
             - audio
             - record
-            - rtmp
     detect:
       height: 360
       width: 640
@@ -221,6 +219,7 @@ cameras:
             - detect
         - path: rtsp://localhost:8554/frigate_office_hq
           roles:
+            - audio
             - record
     detect:
       height: 360
@@ -240,6 +239,7 @@ cameras:
             - detect
         - path: rtsp://localhost:8554/frigate_bedroom_hq
           roles:
+            - audio
             - record
     detect:
       height: 360
