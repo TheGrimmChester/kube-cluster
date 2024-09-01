@@ -88,8 +88,6 @@ spec:
               - *host
       dns-query:
         className: "external"
-        annotations:
-          external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
         hosts:
           - host: &host "dns-query.${SECRET_DOMAIN}"
             paths:
