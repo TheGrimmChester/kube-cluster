@@ -87,6 +87,7 @@ data:
             - "hass-code-c.${SECRET_DOMAIN}"
             - "solar-router.${SECRET_DOMAIN}"
             - "dtu.${SECRET_DOMAIN}"
+            - "adguard.${SECRET_DOMAIN}"
 
           # Applications without auth but low security requirements
         - policy: one_factor

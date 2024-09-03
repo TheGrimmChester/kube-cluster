@@ -10,3 +10,4 @@ resources:
 #  - plex.yaml
   - solar-router.yaml
   - dtu.yaml
+  - adguard.yaml
