@@ -14,7 +14,7 @@ spec:
     pruneIntervalDays: 10
     repository: photoprism-restic-secrets
     cacheCapacity: 200Gi
-    cacheStorageClassName: csi-ceph-blockpool
+    cacheStorageClassName: ceph-block
     volumeSnapshotClassName: csi-ceph-blockpool
     storageClassName: ceph-block
     moverSecurityContext:
