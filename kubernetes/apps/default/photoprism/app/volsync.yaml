@@ -13,7 +13,8 @@ spec:
     copyMethod: Snapshot
     pruneIntervalDays: 10
     repository: photoprism-restic-secrets
-    cacheCapacity: 2Gi
+    cacheCapacity: 200Gi
+    cacheStorageClassName: csi-ceph-blockpool
     volumeSnapshotClassName: csi-ceph-blockpool
     storageClassName: ceph-block
     moverSecurityContext:
