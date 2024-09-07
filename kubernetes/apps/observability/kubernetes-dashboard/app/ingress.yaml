@@ -11,7 +11,7 @@ metadata:
     gethomepage.dev/icon: kubernetes-dashboard.png
     gethomepage.dev/name: Kubernetes Dashboard
     gethomepage.dev/group: Observability
-#    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
 #    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
 #    nginx.ingress.kubernetes.io/ssl-redirect: "true"
 
@@ -30,9 +30,9 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: kubernetes-dashboard-web
+                name: kubernetes-dashboard-kong-proxy
                 port:
-                  number: 8000
+                  number: 443
   tls:
     - hosts:
         - *host

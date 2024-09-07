@@ -26,8 +26,7 @@ spec:
   values:
     extraArgs:
       - --enable-insecure-login
-      - --enable-skip-login
-      - --disable-settings-authorizer
+      - --authentication-mode=basic
     metricsScraper:
       enabled: true
     serviceMonitor:
