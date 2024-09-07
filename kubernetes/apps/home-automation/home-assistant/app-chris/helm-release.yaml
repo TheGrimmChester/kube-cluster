@@ -1,119 +1,201 @@
 ---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/common-3.0.1/charts/library/common/values.schema.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: ha-chris
   namespace: home-automation
 spec:
-  interval: 5m
+  releaseName: home-assistant
+  interval: 15m
+  timeout: 15m
   chart:
     spec:
+      # renovate: registryUrl=https://bjw-s.github.io/helm-charts
       chart: app-template
-      version: 1.5.1
+      version: 3.4.0
+      interval: 15m
       sourceRef:
         kind: HelmRepository
         name: bjw-s
         namespace: flux-system
-
-      interval: 5m
   install:
-    createNamespace: true
+    remediation:
+      retries: 3
   upgrade:
-    remediation: # perform remediation when helm upgrade fails
-      retries: 50
-      remediateLastFailure: true # remediate the last failure, when no retries remain
     cleanupOnFail: true
-#  dependsOn:
-#    - name: cluster-apps-mosquitto
-#      namespace: home-automation
+    remediation:
+      strategy: rollback
+      retries: 3
+
   values:
-    image:
-      repository: ghcr.io/home-assistant/home-assistant
-      tag: 2024.9.0
-#    initContainers:
-#      init-db:
-#        image: ghcr.io/onedr0p/postgres-initdb:14.8
-#        imagePullPolicy: IfNotPresent
-#        envFrom:
-#          - secretRef:
-#              name: home-assistant-chris-secret
-    controller:
-      type: statefulset
-      annotations:
-        reloader.stakater.com/auto: "true"
+    controllers:
+      main:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        #strategy: Recreate
+        #        pod:
+        #          hostNetwork: true
+        #          dnsPolicy: ClusterFirstWithHostNet
+        containers:
+          main:
+            image:
+              repository: ghcr.io/home-assistant/home-assistant
+              tag: 2024.9.0@sha256:796615b38398f6e9beac0af7ed0ffe9c9e717b763e6fa6fdb4d25cae79a80987
+            env:
+              TZ: "Europe/Paris"
+              HASS_HTTP_TRUSTED_PROXY_1: 192.168.1.0/24
+              HASS_HTTP_TRUSTED_PROXY_2: 10.42.0.0/16
+            envFrom:
+              - secretRef:
+                  name: home-assistant-chris-secret
+            probes:
+              liveness:
+                enabled: false
+              readiness:
+                enabled: false
+              startup:
+                enabled: true
+            resources:
+              limits:
+                memory: 3000Mi
+              requests:
+                cpu: 100m
+                memory: 1000Mi
+          #            securityContext:
+          #              allowPrivilegeEscalation: false
+          #              readOnlyRootFilesystem: true
+          #              capabilities: { drop: ["ALL"] }
+          #            securityContext:
+          #              allowPrivilegeEscalation: false
+          #              readOnlyRootFilesystem: true
+          #              capabilities: { drop: ["ALL"] }
 
-    env:
-      TZ: "Europe/Paris"
-    envFrom:
-      - secretRef:
-          name: home-assistant-chris-secret
+          codeserver:
+            image:
+              repository: ghcr.io/coder/code-server
+              tag: 4.92.2@sha256:f32cfa5e7cc768f60969f1d2183fc4c7aa093b80b93c365535e83f79ccf004f2
+            env:
+              TZ: "Europe/Paris"
+            args:
+              - "--auth"
+              - "none"
+              - --user-data-dir
+              - "/config/.vscode"
+              - --auth
+              - "none"
+              - --port
+              - "12321"
+              - "/config"
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 512Mi
 
-#    envFrom:
-#      - secretRef:
-#          name: home-assistant
-#    hostNetwork: true
-#    dnsPolicy: ClusterFirstWithHostNet
+        pod:
+          securityContext:
+            runAsUser: 0
+            runAsGroup: 0
+            fsGroup: 568
+            fsGroupChangePolicy: "OnRootMismatch"
+            supplementalGroups:
+              - 100
+
+    #    defaultPodOptions:
+    #      securityContext:
+    #        runAsNonRoot: true
+    #        runAsUser: 568
+    #        runAsGroup: 568
+    #        fsGroup: 568
+    #        fsGroupChangePolicy: OnRootMismatch
+    #        seccompProfile: { type: RuntimeDefault }
 
     service:
       main:
+        #        type: LoadBalancer
+        controller: main
+        #        loadBalancerIP: ${SVC_HASS_IP}
         ports:
           http:
             port: 8123
-
+      #          mdns-tcp:
+      #            enabled: true
+      #            port: 5353
+      #            protocol: TCP
+      #            targetPort: 5353
+      #          mdns-udp:
+      #            enabled: true
+      #            port: 5353
+      #            protocol: UDP
+      #            targetPort: 5353
+      codeserver:
+        #        type: ClusterIP
+        controller: main
+        ports:
+          http:
+            enabled: true
+            port: 12321
+            protocol: TCP
+            targetPort: 12321
     ingress:
       main:
         enabled: true
-        ingressClassName: "external"
+        className: external
         annotations:
           external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
-#          external-dns/is-public: "true"
-#          nginx.ingress.kubernetes.io/whitelist-source-range: |
-#            10.0.0.0/8,172.16.0.0/12,192.168.0.0/16
           hajimari.io/enable: "true"
-#          hajimari.io/group: "home"
           hajimari.io/icon: "home-assistant"
           gethomepage.dev/enabled: "true"
-          gethomepage.dev/name: "Home Assistant Chris"
+          gethomepage.dev/name: "HA Chris"
           gethomepage.dev/description: ""
           gethomepage.dev/group: Automatisation
           gethomepage.dev/icon: "home-assistant.png"
         hosts:
-          - host: &host "hass-c.${SECRET_DOMAIN}"
+          - host: "hass-c.${SECRET_DOMAIN}"
             paths:
               - path: /
                 pathType: Prefix
-        tls:
-          - hosts:
-              - *host
-    probes:
-      liveness:
-        enabled: false
-      readiness:
-        enabled: false
-      startup:
-        enabled: false
+                service:
+                  identifier: main
+                  port: http
+      codeserver:
+        enabled: true
+        className: external
+        annotations:
+          hajimari.io/appName: 'Hass Config Chris'
+          hajimari.io/icon: cib:visual-studio-code
+          external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
+          nginx.ingress.kubernetes.io/auth-method: GET
+          nginx.ingress.kubernetes.io/auth-url: http://authelia.security.svc.cluster.local/api/verify
+          nginx.ingress.kubernetes.io/auth-signin: "https://auth.${SECRET_DOMAIN}?rm=$request_method"
+          nginx.ingress.kubernetes.io/auth-response-headers: Remote-User,Remote-Name,Remote-Groups,Remote-Email
+          nginx.ingress.kubernetes.io/auth-snippet: |
+            proxy_set_header X-Forwarded-Method $request_method;
 
-    podSecurityContext:
-      runAsUser: 0
-      runAsGroup: 0
-      fsGroup: 568
-      fsGroupChangePolicy: "OnRootMismatch"
-      supplementalGroups:
-        - 100
-
-#    persistence:
-#      ha-config:
-#        enabled: true
-#        type: configMap
-#        name: ha-config
-#        mountPath: /config/configuration.yaml
-#        subPath: configuration.yaml
-#    persistence:
-#      config:
-#        enabled: true
-#        storageClass: ceph-block
-#        accessMode: ReadWriteOnce
-#        size: "5Gi"
+        hosts:
+          - host: "hass-code-c.${SECRET_DOMAIN}"
+            paths:
+              - path: /
+                pathType: Prefix
+                service:
+                  identifier: codeserver
+                  port: http
+    persistence:
+      config:
+        existingClaim: config-ha-chris-0
+        globalMounts:
+          - path: /config
+      logs:
+        type: emptyDir
+        globalMounts:
+          - path: /config/logs
+      tts:
+        type: emptyDir
+        globalMounts:
+          - path: /config/tts
+      tmp:
+        type: emptyDir
     volumeClaimTemplates:
       - name: config
         mountPath: /config
@@ -121,65 +203,5 @@ spec:
         size: 5Gi
         storageClass: ceph-block
 
-    persistence:
-      hass-dbus:
-        enabled: true
-        type: hostPath
-        hostPath: /run/dbus
-        mountPath: /run/dbus
-        readonly: true
-      hass-ssh:
-        enabled: true
-        type: hostPath
-        hostPath: /home/hawol/.ssh
-        mountPath: /root/.ssh
-#      config:
-#        enabled: true
-#        type: emptyDir
-#        existingClaim: home-assistant-config-v1
-    podAnnotations:
-      secret.reloader.stakater.com/reload: "home-assistant"
-    resources:
-      requests:
-        cpu: 10m
-        memory: 100Mi
-      limits:
-        memory: 750Mi
-    addons:
-      codeserver:
-        enabled: true
-        image:
-          repository: ghcr.io/coder/code-server
-          tag: 4.92.2
-        env:
-          TZ: '${TIMEZONE}'
-        workingDir: '/config'
-        args:
-          - --auth
-          - 'none'
-          - --user-data-dir
-          - '/config/.vscode'
-          - --extensions-dir
-          - '/config/.vscode'
-        ingress:
-          enabled: true
-          ingressClassName: 'external'
-          annotations:
-            external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
-            hajimari.io/appName: 'Hass Config C'
-            hajimari.io/icon: cib:visual-studio-code
-            nginx.ingress.kubernetes.io/whitelist-source-range: |
-              10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,185.39.140.119,82.66.187.107
-          hosts:
-            - host: &host 'hass-code-c.${SECRET_DOMAIN}'
-              paths:
-                - path: /
-                  pathType: Prefix
-          tls:
-            - hosts:
-                - *host
-        volumeMounts:
-          - name: config
-            mountPath: /config
-#    nodeSelector:
-#      kubernetes.io/hostname: "node-3"
+    nodeSelector:
+      kubernetes.io/hostname: "worker-1"
