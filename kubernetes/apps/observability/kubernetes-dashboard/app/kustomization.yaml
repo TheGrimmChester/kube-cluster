@@ -6,3 +6,4 @@ namespace: observability
 resources:
   - ./rbac.yaml
   - ./helmrelease.yaml
+  - ./ingress.yaml

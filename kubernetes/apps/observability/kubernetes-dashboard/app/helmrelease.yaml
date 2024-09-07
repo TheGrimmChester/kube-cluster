@@ -1,5 +1,4 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
@@ -15,7 +14,6 @@ spec:
         kind: HelmRepository
         name: kubernetes-dashboard
         namespace: flux-system
-  maxHistory: 2
   install:
     remediation:
       retries: 3
@@ -23,54 +21,20 @@ spec:
     cleanupOnFail: true
     remediation:
       retries: 3
-  driftDetection:
-    mode: enabled
-    ignore:
-      - paths:
-          - /spec/containers/resources/limits
-        target:
-          kind: Pod
-
   uninstall:
     keepHistory: false
   values:
-    env:
-      TZ: Europe/Paris
     extraArgs:
+      - --enable-insecure-login
       - --enable-skip-login
       - --disable-settings-authorizer
-      - --enable-insecure-login
-      - --token-ttl=43200
-    settings:
-      global:
-      ## Cluster name that appears in the browser window title if it is set
-      clusterName: ${SECRET_DOMAIN}
-      ## Max number of items that can be displayed on each list page
-      itemsPerPage: 100
-      ## Number of seconds between every auto-refresh of logs
-      logsAutoRefreshTimeInterval: 5
-      ## Number of seconds between every auto-refresh of every resource. Set 0 to disable
-      resourceAutoRefreshTimeInterval: 5
-      ## Hide all access denied warnings in the notification panel
-      disableAccessDeniedNotifications: false
-
-    ingress:
+    metricsScraper:
       enabled: true
-      ingressClassName: internal
-      annotations:
-        external-dns.alpha.kubernetes.io/target: "internal.${SECRET_DOMAIN}"
-        nginx.ingress.kubernetes.io/proxy-body-size: "100m"
-        nginx.ingress.kubernetes.io/configuration-snippet: |
-          auth_request_set $required_groups 'kubernetes_dashboard';
-        nginx.ingress.kubernetes.io/whitelist-source-range: |
-          10.0.0.0/8,172.16.0.0/12,192.168.0.0/16
-
-      hosts:
-        - &host "kubernetes.${SECRET_DOMAIN}"
-      tls:
-        - hosts:
-            - *host
-      metricsScraper:
-        enabled: true
-      serviceMonitor:
-        enabled: false
+    serviceMonitor:
+      enabled: false
+    cert-manager:
+      enabled: false
+    nginx:
+      enabled: false
+    metrics-server:
+      enabled: false
