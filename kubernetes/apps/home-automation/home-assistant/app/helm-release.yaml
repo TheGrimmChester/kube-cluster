@@ -13,7 +13,7 @@ spec:
     spec:
       # renovate: registryUrl=https://bjw-s.github.io/helm-charts
       chart: app-template
-      version: 3.1.0
+      version: 3.4.0
       interval: 15m
       sourceRef:
         kind: HelmRepository
@@ -31,7 +31,9 @@ spec:
   values:
     controllers:
       main:
-        strategy: Recreate
+        annotations:
+          reloader.stakater.com/auto: "true"
+        #strategy: Recreate
 #        pod:
 #          hostNetwork: true
 #          dnsPolicy: ClusterFirstWithHostNet
@@ -60,6 +62,10 @@ spec:
               requests:
                 cpu: 100m
                 memory: 1000Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
 #            securityContext:
 #              allowPrivilegeEscalation: false
 #              readOnlyRootFilesystem: true
@@ -72,6 +78,7 @@ spec:
             env:
               TZ: "Europe/Paris"
             args:
+              - "--auth", "none",
               - --user-data-dir
               - "/config/.vscode"
               - --auth
@@ -79,20 +86,30 @@ spec:
               - --port
               - "12321"
               - "/config"
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 512Mi
 
-        pod:
-          securityContext:
-            runAsUser: 0
-            runAsGroup: 0
-            fsGroup: 568
-            fsGroupChangePolicy: "OnRootMismatch"
-            supplementalGroups:
-              - 100
+#        pod:
+#          securityContext:
+#            runAsUser: 0
+#            runAsGroup: 0
+#            fsGroup: 568
+#            fsGroupChangePolicy: "OnRootMismatch"
+#            supplementalGroups:
+#              - 100
 
     defaultPodOptions:
-      tolerations:
-        - key: "arm"
-          operator: "Exists"
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile: { type: RuntimeDefault }
+
     service:
       main:
 #        type: LoadBalancer
