@@ -9,3 +9,4 @@ resources:
   - ./snapshot-controller/ks.yaml
   - ./volsync/ks.yaml
   - ./fstrim/ks.yaml
+  - ./powertune/ks.yaml
