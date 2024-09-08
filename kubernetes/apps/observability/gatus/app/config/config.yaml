@@ -1,0 +1,34 @@
+---
+web:
+  port: ${WEB_PORT}
+metrics: true
+debug: false
+ui:
+  title: Health Status
+  header: Health Status
+  logo: https://raw.githubusercontent.com/joryirving/home-ops/main/docs/src/assets/icons/lds-transparent.png
+connectivity:
+  checker:
+    target: 1.1.1.1:53
+    interval: 1m
+endpoints:
+  - name: Kubernetes Node 1 (Ayaka)
+    group: ICMP
+    url: icmp://192.168.1.173
+    conditions: ["[CONNECTED] == true"]
+    alerts: [{ type: discord }]
+  - name: Kubernetes Node 2 (Eula)
+    group: ICMP
+    url: icmp://192.168.1.32
+    conditions: ["[CONNECTED] == true"]
+    alerts: [{ type: discord }]
+  - name: Kubernetes Node 3 (Ganyu)
+    group: ICMP
+    url: icmp://192.168.1.138
+    conditions: ["[CONNECTED] == true"]
+    alerts: [{ type: discord }]
+  - name: NAS
+    group: ICMP
+    url: icmp://192.168.1.101
+    conditions: ["[CONNECTED] == true"]
+    alerts: [{ type: discord }]
