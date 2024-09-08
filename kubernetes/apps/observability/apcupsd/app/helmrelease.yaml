@@ -73,7 +73,7 @@ spec:
         enabled: false
 
     nodeSelector:
-      kubernetes.io/hostname: "worker-1"
+      ups.feature.node.kubernetes.io/apc: "true"
 
     volumeClaimTemplates:
       - name: data

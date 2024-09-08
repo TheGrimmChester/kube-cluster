@@ -54,6 +54,3 @@ spec:
     ingress:
       main:
         enabled: false
-
-    nodeSelector:
-      kubernetes.io/hostname: "worker-1"

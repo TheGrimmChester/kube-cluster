@@ -192,7 +192,7 @@ spec:
           - secretRef:
               name: zigbee2mqtt-secret
     nodeSelector:
-      kubernetes.io/hostname: "worker-1"
+      zigbee.feature.node.kubernetes.io/sonoff: "true"
 #    affinity:
 #      podAffinity:
 #        requiredDuringSchedulingIgnoredDuringExecution:
