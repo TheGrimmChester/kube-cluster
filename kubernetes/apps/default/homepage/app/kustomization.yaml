@@ -4,4 +4,8 @@ kind: Kustomization
 resources:
   - ./configmap.yaml
   - ./helmrelease.yaml
+  - ./cluster_role.yaml
+  - ./service_account.yaml
+  - ./service_account_token.yaml
   - ./secret.sops.yaml
+  - ../../../../templates/gatus/guarded

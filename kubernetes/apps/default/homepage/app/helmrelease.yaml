@@ -65,7 +65,7 @@ spec:
             proxy_set_header X-Forwarded-Method $request_method;
           hajimari.io/enable: "false"
         hosts:
-          - host: &host home.${SECRET_DOMAIN}
+          - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
             paths:
               - path: /
                 pathType: Prefix
