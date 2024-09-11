@@ -92,7 +92,7 @@ data:
           # Applications without auth but low security requirements
         - policy: one_factor
           domain:
-            - "home.${SECRET_DOMAIN}"
+            - "homepage.${SECRET_DOMAIN}"
             - "apps.${SECRET_DOMAIN}"
             - "jd2.${SECRET_DOMAIN}"
             - "sickchill.${SECRET_DOMAIN}"
