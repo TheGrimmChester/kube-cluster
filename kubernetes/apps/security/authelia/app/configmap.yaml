@@ -97,6 +97,7 @@ data:
             - "jd2.${SECRET_DOMAIN}"
             - "sickchill.${SECRET_DOMAIN}"
             - "epic.${SECRET_DOMAIN}"
+            - "plex-ripper.${SECRET_DOMAIN}"
 
           # Family access
         - policy: one_factor
