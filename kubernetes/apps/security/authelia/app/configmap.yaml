@@ -88,6 +88,7 @@ data:
             - "solar-router.${SECRET_DOMAIN}"
             - "dtu.${SECRET_DOMAIN}"
             - "adguard.${SECRET_DOMAIN}"
+            - "ts.${SECRET_DOMAIN}"
 
           # Applications without auth but low security requirements
         - policy: one_factor

@@ -45,6 +45,23 @@ spec:
               tag: 2024.02.24-beta1@sha256:4c618a7b6e8b32f5ef6af3c7e6936c63e8568ad9ae8d190dafb2551a64ff40a2
             securityContext:
               readOnlyRootFilesystem: true
+      ui2:
+        strategy: RollingUpdate
+        containers:
+          app:
+            image:
+              repository: goodieshq/headscale-admin
+              tag: latest
+            securityContext:
+              readOnlyRootFilesystem: true
+            env:
+              TZ: Europe/Paris
+              HS_SERVER: "https://ts.${SECRET_DOMAIN}"
+              BASE_PATH: /admin
+            envFrom:
+              - secretRef:
+                  name: headscale-secret
+
     defaultPodOptions:
       securityContext:
         sysctls:
@@ -65,12 +82,22 @@ spec:
           http:
             port: 80
 
+      ui2:
+        controller: ui2
+        ports:
+          http:
+            port: 80
+
     persistence:
       config:
         type: secret
         name: headscale-config
         advancedMounts:
           headscale:
+            app:
+              - path: /etc/headscale/config.yaml
+                subPath: config.yaml
+          ui2:
             app:
               - path: /etc/headscale/config.yaml
                 subPath: config.yaml
@@ -93,12 +120,23 @@ spec:
                 subPath: data
               - path: /home/appuser/.local
                 subPath: .local
+          ui2:
+            app:
+              - path: /tmp
+                subPath: .
 
+      configui2:
+        existingClaim: headscale-ui2
+        advancedMounts:
+          ui2:
+            app:
+              - path: /data
     ingress:
       headscale:
         className: external
         annotations:
-          external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
+          external-dns.alpha.kubernetes.io/target: "direct.${SECRET_DOMAIN}"
+          external-dns.alpha.kubernetes.io/cloudflare-proxied: "false"
         hosts:
           - host: &host "ts.${SECRET_DOMAIN}"
             paths:
@@ -109,7 +147,8 @@ spec:
       ui:
         className: external
         annotations:
-          external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
+          external-dns.alpha.kubernetes.io/target: "direct.${SECRET_DOMAIN}"
+          external-dns.alpha.kubernetes.io/cloudflare-proxied: "false"
         hosts:
           - host: *host
             paths:
@@ -117,11 +156,30 @@ spec:
                 service:
                   identifier: ui
                   port: http
+      ui2:
+        className: external
+        annotations:
+          external-dns.alpha.kubernetes.io/target: "direct.${SECRET_DOMAIN}"
+          external-dns.alpha.kubernetes.io/cloudflare-proxied: "false"
+          nginx.ingress.kubernetes.io/auth-method: GET
+          nginx.ingress.kubernetes.io/auth-url: http://authelia.security.svc.cluster.local/api/verify
+          nginx.ingress.kubernetes.io/auth-signin: "https://auth.${SECRET_DOMAIN}?rm=$request_method"
+          nginx.ingress.kubernetes.io/auth-response-headers: Remote-User,Remote-Name,Remote-Groups,Remote-Email
+          nginx.ingress.kubernetes.io/auth-snippet: |
+            proxy_set_header X-Forwarded-Method $request_method;
+        hosts:
+          - host: *host
+            paths:
+              - path: /admin
+                service:
+                  identifier: ui2
+                  port: http
+
     secrets:
       config:
         stringData:
           config.yaml: |
-            server_url: "http://ts.${SECRET_DOMAIN}"
+            server_url: "https://ts.${SECRET_DOMAIN}"
             listen_addr: 0.0.0.0:8080
             metrics_listen_addr: 0.0.0.0:9090
             private_key_path: /var/lib/headscale/private.key
