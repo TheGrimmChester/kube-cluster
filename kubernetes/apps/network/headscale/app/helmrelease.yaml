@@ -69,6 +69,10 @@ spec:
             value: '0'
     service:
       headscale:
+        type: LoadBalancer
+        loadBalancerIP: '192.168.1.208'
+        annotations:
+          "io.cilium/lb-ipam-ips": "192.168.1.208"
         controller: headscale
         ports:
           http:
