@@ -21,7 +21,7 @@ spec:
           app:
             image:
               repository: ghcr.io/juanfont/headscale
-              tag: 0.22.3@sha256:aadf29a875bb2ffdf6579869e5759935f7a64b9fd19fcea9d5385c5d7220dc7b
+              tag: v0.23.0-rc.1
             command: [headscale]
             args: [serve]
             probes:
@@ -207,7 +207,7 @@ spec:
             # TODO: Remove after 0.23.0
             db_type: sqlite3
             db_path: /var/lib/headscale/db.sqlite
-            dns_config:
+            dns:
               # Whether to prefer using Headscale provided DNS or use local.
               override_local_dns: true
               # List of DNS servers to expose to clients.
@@ -215,6 +215,6 @@ spec:
                 - 192.168.1.254
               domains: []
               magic_dns: true
-              base_domain: "ts.${SECRET_DOMAIN}"
+              base_domain: "${SECRET_DOMAIN}"
             log:
               level: debug
