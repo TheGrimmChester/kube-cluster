@@ -182,7 +182,7 @@ spec:
       config:
         stringData:
           config.yaml: |
-            server_url: "https://${HOME_IP}"
+            server_url: "https://ts.${SECRET_DOMAIN}/"
             listen_addr: 0.0.0.0:8080
             metrics_listen_addr: 0.0.0.0:9090
             private_key_path: /var/lib/headscale/private.key
