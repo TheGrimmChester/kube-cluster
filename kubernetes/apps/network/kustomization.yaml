@@ -10,3 +10,4 @@ resources:
 #  - ./adguard/ks.yaml
   - ./nginx/ks.yaml
   - ./external-services/
+  - ./headscale/ks.yaml
