@@ -10,7 +10,7 @@ metadata:
 spec:
   dependsOn:
     - name: cluster-apps-rook-ceph-cluster
-    - name: nginx-external
+    - name: ingress-nginx-external
     - name: cluster-apps-minio
   path: ./kubernetes/apps/observability/thanos/app
   prune: true

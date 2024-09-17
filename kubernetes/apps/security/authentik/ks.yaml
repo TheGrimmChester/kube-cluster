@@ -8,7 +8,7 @@ metadata:
 spec:
   dependsOn:
     - name: cluster-apps-cloudnative-pg
-    - name: nginx-external
+    - name: ingress-nginx-external
   path: ./kubernetes/apps/security/authentik/app
   prune: true
   sourceRef:

@@ -10,7 +10,7 @@ spec:
   dependsOn:
     - name: cluster-apps-rook-ceph-cluster
     - name: cluster-apps-volsync
-    - name: nginx-external
+    - name: ingress-nginx-external
   interval: 10m
   path: "./kubernetes/apps/default/mealie/app"
   prune: true

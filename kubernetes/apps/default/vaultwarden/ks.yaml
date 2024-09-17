@@ -9,7 +9,7 @@ spec:
   dependsOn:
     - name: cluster-apps-rook-ceph-cluster
     - name: cluster-apps-cloudnative-pg
-    - name: nginx-external
+    - name: ingress-nginx-external
   path: ./kubernetes/apps/default/vaultwarden/app
   prune: true
   sourceRef:

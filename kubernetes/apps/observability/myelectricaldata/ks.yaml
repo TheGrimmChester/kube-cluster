@@ -10,7 +10,7 @@ metadata:
 spec:
   dependsOn:
     - name: cluster-apps-rook-ceph-cluster
-    - name: nginx-external
+    - name: ingress-nginx-external
   path: './kubernetes/apps/observability/myelectricaldata/app/'
   prune: true
   sourceRef:
