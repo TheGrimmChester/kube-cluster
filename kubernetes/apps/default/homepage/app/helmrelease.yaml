@@ -87,9 +87,9 @@ spec:
                 pathType: Prefix
                 backend:
                   service:
-                    name: ak-outpost-authentik-embedded-outpost
+                    name: authentik-server
                     port:
-                      number: 9000
+                      number: 80
 
         tls:
           - hosts:
