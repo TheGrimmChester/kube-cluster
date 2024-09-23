@@ -83,13 +83,13 @@ spec:
                 service:
                   name: main
                   port: http
-              - path: /outpost.goauthentik.io
-                pathType: Prefix
-                backend:
-                  service:
-                    name: authentik-server
-                    port:
-                      number: 80
+#              - path: /outpost.goauthentik.io
+#                pathType: Prefix
+#                backend:
+#                  service:
+#                    name: authentik-server
+#                    port:
+#                      number: 80
 
         tls:
           - hosts:
