@@ -83,13 +83,13 @@ spec:
                 service:
                   name: main
                   port: http
-#              - path: /outpost.goauthentik.io
-#                pathType: Prefix
-#                backend:
-#                  service:
-#                    name: ak-outpost-authentik-embedded-outpost
-#                    port:
-#                      number: 9000
+              - path: /outpost.goauthentik.io
+                pathType: Prefix
+                backend:
+                  service:
+                    name: ak-outpost-authentik-embedded-outpost
+                    port:
+                      number: 9000
 
         tls:
           - hosts:
