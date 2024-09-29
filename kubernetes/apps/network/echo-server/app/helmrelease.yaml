@@ -80,7 +80,7 @@ spec:
             scrapeTimeout: 10s
     ingress:
       app:
-        className: external
+        className: external-personal
         annotations:
           external-dns.alpha.kubernetes.io/target: "external.${PERSONAL_SECRET_DOMAIN}"
         hosts:

@@ -2,7 +2,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: ingress-nginx-external
+  name: ingress-nginx-external-personal
 spec:
   interval: 30m
   chart:
@@ -26,24 +26,24 @@ spec:
   values:
     allowSnippetAnnotations: true # Required but risky - see https://github.com/kubernetes/ingress-nginx/issues/7837 - ok as only one user in the cluster
     watchIngressWithoutClass: true
-    fullnameOverride: ingress-nginx-external
+    fullnameOverride: ingress-nginx-external-personal
     controller:
-      replicaCount: 3
+      replicaCount: 1
       service:
         annotations:
-          external-dns.alpha.kubernetes.io/hostname: "external.${SECRET_DOMAIN}"
-          io.cilium/lb-ipam-ips: "192.168.1.202"
+          external-dns.alpha.kubernetes.io/hostname: "external.${PERSONAL_SECRET_DOMAIN}"
+          io.cilium/lb-ipam-ips: "192.168.1.203"
         externalTrafficPolicy: Cluster
       ingressClassResource:
-        name: external
+        name: external-personal
         default: false
-        controllerValue: k8s.io/external
+        controllerValue: k8s.io/external-personal
       admissionWebhooks:
         objectSelector:
           matchExpressions:
             - key: ingress-class
               operator: In
-              values: ["external"]
+              values: ["external-personal"]
       config:
         block-user-agents: "GPTBot,~*GPTBot*,ChatGPT-User,~*ChatGPT-User*,Google-Extended,~*Google-Extended*,CCBot,~*CCBot*,Omgilibot,~*Omgilibot*,FacebookBot,~*FacebookBot*" # taken from https://github.com/superseriousbusiness/gotosocial/blob/main/internal/web/robots.go
         client-max-body-size: 10G
@@ -110,7 +110,7 @@ spec:
           namespaceSelector:
             any: true
       extraArgs:
-        default-ssl-certificate: "network/${SECRET_DOMAIN/./-}-production-tls"
+        default-ssl-certificate: "network/${PERSONAL_SECRET_DOMAIN/./-}-production-tls"
       topologySpreadConstraints:
         - maxSkew: 1
           topologyKey: kubernetes.io/hostname
@@ -118,7 +118,7 @@ spec:
           labelSelector:
             matchLabels:
               app.kubernetes.io/name: ingress-nginx
-              app.kubernetes.io/instance: ingress-nginx-external
+              app.kubernetes.io/instance: ingress-nginx-external-personal
               app.kubernetes.io/component: controller
       resources:
         requests:
