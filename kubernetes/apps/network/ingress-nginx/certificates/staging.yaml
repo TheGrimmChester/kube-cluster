@@ -12,3 +12,17 @@ spec:
   dnsNames:
     - "${SECRET_DOMAIN}"
     - "*.${SECRET_DOMAIN}"
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: "${PERSONAL_SECRET_DOMAIN/./-}-staging"
+spec:
+  secretName: "${PERSONAL_SECRET_DOMAIN/./-}-staging-tls"
+  issuerRef:
+    name: letsencrypt-staging
+    kind: ClusterIssuer
+  commonName: "${PERSONAL_SECRET_DOMAIN}"
+  dnsNames:
+    - "${PERSONAL_SECRET_DOMAIN}"
+    - "*.${PERSONAL_SECRET_DOMAIN}"
