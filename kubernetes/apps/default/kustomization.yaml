@@ -21,3 +21,4 @@ resources:
   - ./joplin/ks.yaml
   - ./homepage/ks.yaml
   - ./photoprism/ks.yaml
+  - ./personal/ks.yaml
