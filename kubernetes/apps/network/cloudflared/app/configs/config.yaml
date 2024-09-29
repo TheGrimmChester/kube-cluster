@@ -8,3 +8,14 @@ ingress:
   - hostname: "*.${SECRET_DOMAIN}"
     service: https://ingress-nginx-external-controller.network.svc.cluster.local:443
   - service: http_status:404
+
+---
+originRequest:
+  originServerName: "external.${PERSONAL_SECRET_DOMAIN}"
+
+ingress:
+  - hostname: "${PERSONAL_SECRET_DOMAIN}"
+    service: https://ingress-nginx-external-controller.network.svc.cluster.local:443
+  - hostname: "*.${PERSONAL_SECRET_DOMAIN}"
+    service: https://ingress-nginx-external-controller.network.svc.cluster.local:443
+  - service: http_status:404
