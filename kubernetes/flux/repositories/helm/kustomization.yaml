@@ -38,3 +38,4 @@ resources:
   - ./descheduler.yaml
   - ./nextcloud-charts.yaml
   - ./authentik-charts.yaml
+  - ./mariadb-operator.yaml

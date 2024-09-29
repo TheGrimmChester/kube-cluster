@@ -12,7 +12,7 @@ spec:
     size: 5Gi
     storageClassName: ceph-block
 
-  replicas: 2
+  replicas: 1
   image: "mariadb:11.5.2"
   imagePullPolicy: IfNotPresent
 
@@ -25,27 +25,13 @@ spec:
         name: mariadb-secret
         key: maxscale_password
       deleteDefaultAdmin: true
-#
-#    kubernetesService:
-#      type: LoadBalancer
-#      metadata:
-#        annotations:
-#          io.cilium/lb-ipam-ips: 10.96.69.240
-#
-#    guiKubernetesService:
-#      type: LoadBalancer
-#      metadata:
-#        annotations:
-#          io.cilium/lb-ipam-ips: 10.96.69.241
 
     connection:
       secretName: mxs-galera-conn
       port: 3306
 
-
-  galera:
-    enabled: true
-    podRecoveryTimeout: 15m
+#  galera:
+#    enabled: true
 
   service:
     type: LoadBalancer
@@ -73,17 +59,6 @@ spec:
     runAsGroup: 999
     fsGroup: 999
     fsGroupChangePolicy: OnRootMismatch
-
-
-  #  livenessProbe:
-  #    initialDelaySeconds: 20
-  #    periodSeconds: 10
-  #    timeoutSeconds: 10
-  #
-  #  readinessProbe:
-  #    initialDelaySeconds: 20
-  #    periodSeconds: 10
-  #    timeoutSeconds: 10
 
   metrics:
     enabled: true

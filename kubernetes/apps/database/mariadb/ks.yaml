@@ -8,10 +8,11 @@ spec:
   prune: true
   sourceRef:
     kind: GitRepository
-    name: flux-system
+    name: home-kubernetes
   interval: 30m
   retryInterval: 1m
   timeout: 5m
+
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
@@ -22,11 +23,11 @@ spec:
   dependsOn:
     - name: mariadb-operator
   targetNamespace: database
-  path: ./k8s/nebula/apps/databases/mariadb/resources
+  path: ./kubernetes/apps/database/mariadb/resources
   prune: true
   sourceRef:
     kind: GitRepository
-    name: flux-system
+    name: home-kubernetes
   interval: 30m
   retryInterval: 1m
   timeout: 5m
