@@ -7,3 +7,4 @@ resources:
   - postgres-backup/ks.yaml
   - redis/ks.yaml
   - pgadmin/ks.yaml
+  - mariadb/ks.yaml
