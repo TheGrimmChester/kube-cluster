@@ -34,6 +34,8 @@ spec:
               tag: latest
             env:
               TZ: Europe/Paris
+              APP_ENV: prod
+              DATABASE_URL: ""
             probes:
               liveness: &probes
                 enabled: false
@@ -54,17 +56,17 @@ spec:
                   periodSeconds: 10
             securityContext:
               allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
+              readOnlyRootFilesystem: false
               capabilities: { drop: ["ALL"] }
             resources:
               requests:
                 cpu: 100m
     defaultPodOptions:
       securityContext:
-        runAsNonRoot: true
-        runAsUser: 568
-        runAsGroup: 568
-        fsGroup: 568
+        runAsNonRoot: false
+        runAsUser: 0
+        runAsGroup: 0
+        fsGroup: 0
         fsGroupChangePolicy: OnRootMismatch
         supplementalGroups: []
         seccompProfile: { type: RuntimeDefault }
@@ -78,7 +80,7 @@ spec:
       app:
         annotations:
           external-dns.alpha.kubernetes.io/target: "external.${PERSONAL_SECRET_DOMAIN}"
-        className: external
+        className: external-personal
         hosts:
           - host: "${PERSONAL_SECRET_DOMAIN}"
             paths:
