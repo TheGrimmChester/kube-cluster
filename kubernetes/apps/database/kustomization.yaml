@@ -8,3 +8,4 @@ resources:
   - redis/ks.yaml
   - pgadmin/ks.yaml
   - mariadb/ks.yaml
+  - phpmyadmin/ks.yaml
