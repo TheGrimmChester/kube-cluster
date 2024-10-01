@@ -88,6 +88,12 @@ spec:
                 service:
                   identifier: app
                   port: http
+          - host: "www.${PERSONAL_SECRET_DOMAIN}"
+            paths:
+              - path: /
+                service:
+                  identifier: app
+                  port: http
     persistence:
       tmp:
         type: emptyDir
