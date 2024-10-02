@@ -4,7 +4,7 @@ kind: Kustomization
 namespace: database
 resources:
   - ./secrets.yaml
-  - ./backup.yaml
+#  - ./backup.yaml
   - ./mariadb.yaml
 labels:
   - pairs:
