@@ -32,16 +32,16 @@ spec:
     cleanPrometheusOperatorObjectNames: true
     prometheusOperator:
       enabled: true
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions:
-                  - key: kubernetes.io/hostname
-                    operator: In
-                    values:
-                      - node-3
-                      - worker-1
+#      affinity:
+#        nodeAffinity:
+#          requiredDuringSchedulingIgnoredDuringExecution:
+#            nodeSelectorTerms:
+#              - matchExpressions:
+#                  - key: kubernetes.io/hostname
+#                    operator: In
+#                    values:
+#                      - node-3
+#                      - worker-1
 
     grafana:
       enabled: false
@@ -52,16 +52,16 @@ spec:
             etcd:
               enabled: true
     kube-state-metrics:
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions:
-                  - key: kubernetes.io/hostname
-                    operator: In
-                    values:
-                      - node-3
-                      - worker-1
+#      affinity:
+#        nodeAffinity:
+#          requiredDuringSchedulingIgnoredDuringExecution:
+#            nodeSelectorTerms:
+#              - matchExpressions:
+#                  - key: kubernetes.io/hostname
+#                    operator: In
+#                    values:
+#                      - node-3
+#                      - worker-1
 
       metricLabelsAllowlist:
         - "pods=[*]"
@@ -471,16 +471,16 @@ spec:
                 requests:
                   storage: 1Gi
 
-    affinity:
-      nodeAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          nodeSelectorTerms:
-            - matchExpressions:
-                - key: kubernetes.io/hostname
-                  operator: In
-                  values:
-                    - node-3
-                    - worker-1
+#    affinity:
+#      nodeAffinity:
+#        requiredDuringSchedulingIgnoredDuringExecution:
+#          nodeSelectorTerms:
+#            - matchExpressions:
+#                - key: kubernetes.io/hostname
+#                  operator: In
+#                  values:
+#                    - node-3
+#                    - worker-1
 #      podAffinity:
 #        requiredDuringSchedulingIgnoredDuringExecution:
 #          - labelSelector:
