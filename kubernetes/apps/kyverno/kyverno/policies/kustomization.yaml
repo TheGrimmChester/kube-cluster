@@ -5,3 +5,4 @@ kind: Kustomization
 resources:
   - ./remove-cpu-limits.yaml
   - ./add-safe-to-evict.yaml
+  - ./inject-tz.yaml
