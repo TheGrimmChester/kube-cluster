@@ -27,17 +27,6 @@ spec:
   uninstall:
     keepHistory: false
   values:
-    affinity:
-      nodeAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          nodeSelectorTerms:
-            - matchExpressions:
-                - key: kubernetes.io/hostname
-                  operator: In
-                  values:
-                    - node-3
-                    - worker-1
-
     image:
       registry: quay.io
       repository: thanos/thanos
@@ -84,17 +73,6 @@ spec:
       replicaCount: 1
     compactor:
       replicaCount: 1
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions:
-                  - key: kubernetes.io/hostname
-                    operator: In
-                    values:
-                      - node-3
-                      - worker-1
-
       enabled: true
       extraFlags:
         - "--compact.concurrency"
@@ -118,17 +96,6 @@ spec:
         size: 15Gi
     storegateway:
       replicaCount: 1
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions:
-                  - key: kubernetes.io/hostname
-                    operator: In
-                    values:
-                      - node-3
-                      - worker-1
-
       enabled: true
 #      resources:
 #        requests:
