@@ -49,8 +49,7 @@ spec:
         ingressClassName: "external"
         annotations:
           external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
-#          nginx.ingress.kubernetes.io/whitelist-source-range: |
-#            10.0.0.0/8,172.16.0.0/12,192.168.0.0/16
+          authentik.domain-auth.home.arpa/enabled: "true"
         hosts:
           - host: "{{ .Release.Name }}.${SECRET_DOMAIN}"
             paths:
