@@ -36,7 +36,7 @@ spec:
           app:
             image:
               repository: plexripper/plexripper
-              tag: dev@sha256:e0690212441fc59f243d5056bc07a0fff6c0e75b5c1802d0a8938bfb80594aa6
+              tag: dev@sha256:0c18d33555e48687315f396485f842921e9e104e2759d07619b20c018a472381
             env:
               TZ: Europe/Paris
             probes:
