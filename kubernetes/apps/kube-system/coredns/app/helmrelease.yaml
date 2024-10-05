@@ -25,11 +25,18 @@ spec:
     keepHistory: false
   values:
     fullnameOverride: coredns
-    replicaCount: 1
-    k8sAppLabelOverride: kube-dns
+    replicaCount: 3
+    # In this mode CoreDNS is deployed as any kubernetes app in user specified namespace.
+    # The CoreDNS service can be exposed outside the cluster by using using either the NodePort or LoadBalancer type of service.
+    # This mode is chosen by setting isClusterService to false
+    isClusterService: false
+    serviceType: LoadBalancer
     service:
       name: kube-dns
-      clusterIP: "${COREDNS_ADDR}"
+      annotations:
+        io.cilium/lb-ipam-ips: 192.168.1.212
+      externalTrafficPolicy: Cluster
+      clusterIP: 10.96.0.10
     serviceAccount:
       create: true
     deployment:
