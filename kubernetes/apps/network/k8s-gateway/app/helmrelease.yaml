@@ -31,3 +31,22 @@ spec:
         io.cilium/lb-ipam-ips: "192.168.1.192"
       externalTrafficPolicy: Cluster
     watchedResources: ["Ingress", "Service"]
+    replicaCount: 3
+    fallthrough:
+      enabled: true
+    extraZonePlugins:
+      - name: forward
+        parameters: . tls://1.1.1.1 tls://1.0.0.1
+        configBlock: |-
+          tls_servername cloudflare-dns.com
+      - name: log
+      - name: errors
+      # Serves a /health endpoint on :8080, required for livenessProbe
+      - name: health
+        configBlock: |-
+          lameduck 5s
+      # Serves a /ready endpoint on :8181, required for readinessProbe
+      - name: ready
+      - name: loop
+      - name: reload
+      - name: loadbalance
