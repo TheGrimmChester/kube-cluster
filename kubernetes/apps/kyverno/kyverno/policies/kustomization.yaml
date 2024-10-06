@@ -7,3 +7,4 @@ resources:
   - ./add-safe-to-evict.yaml
   - ./inject-tz.yaml
   - ./ingress-authentik-annotation.yaml
+  - ./ingress-authelia-annotation.yaml
