@@ -25,6 +25,9 @@ spec:
       envFrom:
         - secretRef:
             name: *secret
+      env:
+        - name: AUTHENTIK_LISTEN__LDAP
+          value: "0.0.0.0:389"
     authentik:
       redis:
         host: redis.database.svc.cluster.local
