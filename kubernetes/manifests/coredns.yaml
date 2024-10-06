@@ -196,8 +196,8 @@ metadata:
     kubernetes.io/cluster-service: "true"
     kubernetes.io/name: "CoreDNS"
 spec:
-  type: LoadBalancer
-#  externalTrafficPolicy: Cluster
+  #  type: LoadBalancer
+  #  externalTrafficPolicy: Cluster
   selector:
     k8s-app: kube-dns
   clusterIP: 10.96.0.10
