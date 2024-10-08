@@ -48,7 +48,7 @@ spec:
                 #gpu.intel.com/i915: "1"
                 #nvidia.com/gpu: 1
               limits:
-                memory: 12Gi
+                memory: 24Gi
                 #nvidia.com/gpu: 1
                 #gpu.intel.com/i915: "1"
 
